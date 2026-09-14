@@ -1,0 +1,265 @@
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { X, Check, FolderPlus, Edit, Sparkles, LayoutGrid, GitCommitVertical, BookOpen } from 'lucide-react';
+import { Section, SectionLayout } from '../../types';
+import { AVAILABLE_ICONS, DynamicIcon } from '../common/DynamicIcon';
+import { useToast } from '../common/Toast';
+
+interface SectionModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  sectionToEdit?: Section | null;
+  onSave: (sectionData: Section) => void;
+  existingCount: number;
+}
+
+export const SectionModal: React.FC<SectionModalProps> = ({
+  isOpen,
+  onClose,
+  sectionToEdit,
+  onSave,
+  existingCount,
+}) => {
+  const { showToast } = useToast();
+
+  const [name, setName] = useState('');
+  const [icon, setIcon] = useState('Sparkles');
+  const [description, setDescription] = useState('');
+  const [color, setColor] = useState('#6366f1');
+  const [layout, setLayout] = useState<SectionLayout>('grid');
+
+  const presetColors = [
+    '#6366f1', // Indigo
+    '#06b6d4', // Cyan
+    '#a855f7', // Purple
+    '#ec4899', // Pink
+    '#10b981', // Emerald
+    '#f59e0b', // Amber
+    '#f43f5e', // Rose
+    '#3b82f6', // Blue
+  ];
+
+  useEffect(() => {
+    if (sectionToEdit) {
+      setName(sectionToEdit.name);
+      setIcon(sectionToEdit.icon);
+      setDescription(sectionToEdit.description);
+      setColor(sectionToEdit.color);
+      setLayout(sectionToEdit.layout);
+    } else {
+      setName('');
+      setIcon('BookOpen');
+      setDescription('');
+      setColor('#6366f1');
+      setLayout('grid');
+    }
+  }, [sectionToEdit, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim()) {
+      showToast('Please enter a section name', 'error');
+      return;
+    }
+
+    const sectionData: Section = {
+      id: sectionToEdit ? sectionToEdit.id : 'sec-' + Date.now(),
+      name: name.trim(),
+      icon,
+      description: description.trim() || `Personal notebook and memory vault for ${name.trim()}`,
+      color,
+      layout,
+      orderIndex: sectionToEdit ? sectionToEdit.orderIndex : existingCount,
+      isCustom: sectionToEdit ? sectionToEdit.isCustom : true,
+      createdAt: sectionToEdit ? sectionToEdit.createdAt : new Date().toISOString(),
+    };
+
+    onSave(sectionData);
+    onClose();
+    showToast(sectionToEdit ? 'Section updated' : 'New dimension added to your world', 'success');
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 15 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 15 }}
+        className="w-full max-w-md rounded-3xl glass-panel border border-white/10 shadow-2xl p-6 sm:p-8 relative my-auto"
+      >
+        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="p-2 rounded-xl flex items-center justify-center border"
+              style={{ backgroundColor: `${color}20`, borderColor: `${color}40`, color }}
+            >
+              {sectionToEdit ? <Edit className="w-4 h-4" /> : <FolderPlus className="w-4 h-4" />}
+            </div>
+            <div>
+              <h2 className="text-lg font-bold font-display text-white">
+                {sectionToEdit ? 'Edit Section Realm' : 'Add New Realm'}
+              </h2>
+              <p className="text-xs text-slate-400">Create a new notebook dimension</p>
+            </div>
+          </div>
+
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Section Name */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+              Realm Name *
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="e.g. Books, Fitness, Bucket List, Certifications..."
+              className="w-full px-3.5 py-2.5 rounded-xl glass-input text-white text-sm"
+              autoFocus
+            />
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+              Short Description
+            </label>
+            <input
+              type="text"
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+              placeholder="What this section represents..."
+              className="w-full px-3.5 py-2.5 rounded-xl glass-input text-white text-sm"
+            />
+          </div>
+
+          {/* Icon Picker */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+              Select Realm Icon
+            </label>
+            <div className="grid grid-cols-7 gap-2 p-2 rounded-xl bg-white/5 border border-white/5 max-h-32 overflow-y-auto">
+              {AVAILABLE_ICONS.map(iconName => (
+                <button
+                  key={iconName}
+                  type="button"
+                  onClick={() => setIcon(iconName)}
+                  className={`p-2 rounded-lg flex items-center justify-center transition-all ${
+                    icon === iconName
+                      ? 'bg-indigo-600 text-white shadow-md ring-2 ring-indigo-400'
+                      : 'text-slate-400 hover:text-white hover:bg-white/10'
+                  }`}
+                  title={iconName}
+                >
+                  <DynamicIcon name={iconName} size={16} />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Color Selection */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+              Accent Color
+            </label>
+            <div className="flex items-center gap-2">
+              {presetColors.map(c => (
+                <button
+                  key={c}
+                  type="button"
+                  onClick={() => setColor(c)}
+                  className={`w-7 h-7 rounded-full transition-transform ${
+                    color === c ? 'scale-125 ring-2 ring-white shadow-lg' : 'hover:scale-110'
+                  }`}
+                  style={{ backgroundColor: c }}
+                />
+              ))}
+              <input
+                type="color"
+                value={color}
+                onChange={e => setColor(e.target.value)}
+                className="w-7 h-7 rounded-full bg-transparent cursor-pointer border-0"
+                title="Custom color"
+              />
+            </div>
+          </div>
+
+          {/* Preferred Layout */}
+          <div>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+              Default Layout Mode
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              <button
+                type="button"
+                onClick={() => setLayout('grid')}
+                className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-1.5 ${
+                  layout === 'grid'
+                    ? 'bg-indigo-600 border-indigo-500 text-white'
+                    : 'glass-button-secondary text-slate-300'
+                }`}
+              >
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span>Grid</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLayout('timeline')}
+                className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-1.5 ${
+                  layout === 'timeline'
+                    ? 'bg-indigo-600 border-indigo-500 text-white'
+                    : 'glass-button-secondary text-slate-300'
+                }`}
+              >
+                <GitCommitVertical className="w-3.5 h-3.5" />
+                <span>Timeline</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setLayout('notebook')}
+                className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-1.5 ${
+                  layout === 'notebook'
+                    ? 'bg-indigo-600 border-indigo-500 text-white'
+                    : 'glass-button-secondary text-slate-300'
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Notebook</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-white/10">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl glass-button-secondary text-xs"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 rounded-xl glass-button-primary text-xs font-bold flex items-center gap-1.5"
+            >
+              <Check className="w-4 h-4" />
+              <span>{sectionToEdit ? 'Save Changes' : 'Create Section'}</span>
+            </button>
+          </div>
+        </form>
+      </motion.div>
+    </div>
+  );
+};
