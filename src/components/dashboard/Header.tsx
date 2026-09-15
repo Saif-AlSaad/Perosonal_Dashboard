@@ -1,6 +1,7 @@
 import React from 'react';
-import { Search, Palette, Settings as SettingsIcon, Lock, Sparkles } from 'lucide-react';
+import { Search, Palette, Settings as SettingsIcon, Lock, Sparkles, Download } from 'lucide-react';
 import { UserProfile } from '../../types';
+import { usePWAInstall } from '../../hooks/usePWAInstall';
 
 interface HeaderProps {
   profile: UserProfile;
@@ -17,6 +18,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSettings,
   onLock,
 }) => {
+  const { canInstall, install } = usePWAInstall();
   return (
     <header className="sticky top-0 z-30 w-full px-4 sm:px-8 py-3.5 glass-panel border-b border-white/10 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -57,6 +59,19 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+          {/* PWA Install Button */}
+          {canInstall && (
+            <button
+              onClick={install}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 hover:from-indigo-500/30 hover:to-cyan-500/30 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs font-semibold shadow-lg transition-all animate-pulse"
+              title="Install 3D Life OS to your desktop or home screen"
+              aria-label="Install App"
+            >
+              <Download className="w-3.5 h-3.5 text-cyan-300" />
+              <span className="hidden sm:inline">Install App</span>
+            </button>
+          )}
+
           {/* Global Search Button */}
           <button
             onClick={onOpenSearch}
