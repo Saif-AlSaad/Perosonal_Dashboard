@@ -19,7 +19,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSettings,
   onLock,
 }) => {
-  const { canInstall, isInstalled, install } = usePWAInstall();
+  const { canInstall, isInstalled, isAndroid, apkDownloadUrl, install } = usePWAInstall();
   const [showInstallGuide, setShowInstallGuide] = useState(false);
 
   const handleInstallAction = async () => {
@@ -72,8 +72,21 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-          {/* PWA Install Button */}
-          {!isInstalled && (
+          {/* Direct Android APK Download Button (Auto-detected on Android) */}
+          {isAndroid && !isInstalled ? (
+            <a
+              href={apkDownloadUrl}
+              download="LifeOS.apk"
+              target="_blank"
+              rel="noopener noreferrer"
+              id="android-download-apk-btn"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-cyan-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 border border-emerald-500/40 text-emerald-200 hover:text-white text-xs font-semibold shadow-lg transition-all animate-pulse shrink-0 whitespace-nowrap"
+              title="Download Android App (.apk)"
+              aria-label="Download Android App (.apk)"
+            >
+              <span>📥 Download Android App (.apk)</span>
+            </a>
+          ) : !isInstalled && (
             <button
               onClick={handleInstallAction}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 hover:from-indigo-500/30 hover:to-cyan-500/30 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs font-semibold shadow-lg transition-all"
@@ -138,6 +151,7 @@ export const Header: React.FC<HeaderProps> = ({
         isOpen={showInstallGuide}
         onClose={() => setShowInstallGuide(false)}
         canInstall={canInstall}
+        apkDownloadUrl={apkDownloadUrl}
         onInstall={install}
       />
     </header>

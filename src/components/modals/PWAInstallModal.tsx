@@ -6,6 +6,7 @@ interface PWAInstallModalProps {
   isOpen: boolean;
   onClose: () => void;
   canInstall: boolean;
+  apkDownloadUrl?: string;
   onInstall: () => Promise<boolean>;
 }
 
@@ -13,6 +14,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
   isOpen,
   onClose,
   canInstall,
+  apkDownloadUrl,
   onInstall,
 }) => {
   const [activeTab, setActiveTab] = useState<'windows' | 'android' | 'ios'>('windows');
@@ -149,12 +151,22 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
 
           {activeTab === 'android' && (
             <div className="space-y-2.5 text-xs text-slate-300">
+              {/* Direct APK Download CTA */}
+              <a
+                href={apkDownloadUrl || 'https://github.com/Saif-AlSaad/Perosonal_Dashboard/releases/latest/download/LifeOS.apk'}
+                download="LifeOS.apk"
+                className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500/25 to-teal-500/25 hover:from-emerald-500/35 hover:to-teal-500/35 border border-emerald-500/40 text-emerald-200 hover:text-white text-xs font-bold flex items-center justify-center gap-2 shadow-lg transition-all"
+              >
+                <Download className="w-4 h-4 text-emerald-300 animate-bounce" />
+                <span>Download LifeOS.apk Directly</span>
+              </a>
+
               <div className="p-3 rounded-2xl bg-white/5 border border-white/5 flex items-start gap-2.5">
                 <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-mono font-bold text-[11px] shrink-0 mt-0.5">1</span>
                 <div>
-                  <p className="font-semibold text-white">Open in Chrome on Android</p>
+                  <p className="font-semibold text-white">Tap the downloaded LifeOS.apk notification</p>
                   <p className="text-slate-400 mt-0.5">
-                    Tap the <strong>three dots menu (⋮)</strong> at the top right of Chrome.
+                    Android will prompt &quot;Do you want to install this app?&quot;. Tap <strong>Install</strong>.
                   </p>
                 </div>
               </div>
@@ -162,9 +174,9 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
               <div className="p-3 rounded-2xl bg-white/5 border border-white/5 flex items-start gap-2.5">
                 <span className="w-5 h-5 rounded-full bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-mono font-bold text-[11px] shrink-0 mt-0.5">2</span>
                 <div>
-                  <p className="font-semibold text-white">Tap &quot;Install app&quot; or &quot;Add to Home screen&quot;</p>
+                  <p className="font-semibold text-white">Alternative: Chrome Menu Install</p>
                   <p className="text-slate-400 mt-0.5">
-                    Android will create an app icon in your app drawer and home screen that launches full-screen offline.
+                    Tap the <strong>three dots menu (⋮)</strong> in Chrome &gt; <strong>&quot;Install app&quot;</strong> or <strong>&quot;Add to Home screen&quot;</strong>.
                   </p>
                 </div>
               </div>
