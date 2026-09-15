@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, Palette, Settings as SettingsIcon, Lock, Sparkles, Download } from 'lucide-react';
 import { UserProfile } from '../../types';
 import { usePWAInstall } from '../../hooks/usePWAInstall';
+import { PWAInstallModal } from '../modals/PWAInstallModal';
 
 interface HeaderProps {
   profile: UserProfile;
@@ -18,7 +19,19 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSettings,
   onLock,
 }) => {
-  const { canInstall, install } = usePWAInstall();
+  const { canInstall, isInstalled, install } = usePWAInstall();
+  const [showInstallGuide, setShowInstallGuide] = useState(false);
+
+  const handleInstallAction = async () => {
+    if (canInstall) {
+      const success = await install();
+      if (!success) {
+        setShowInstallGuide(true);
+      }
+    } else {
+      setShowInstallGuide(true);
+    }
+  };
   return (
     <header className="sticky top-0 z-30 w-full px-4 sm:px-8 py-3.5 glass-panel border-b border-white/10 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -60,11 +73,11 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Right: Actions */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           {/* PWA Install Button */}
-          {canInstall && (
+          {!isInstalled && (
             <button
-              onClick={install}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 hover:from-indigo-500/30 hover:to-cyan-500/30 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs font-semibold shadow-lg transition-all animate-pulse"
-              title="Install 3D Life OS to your desktop or home screen"
+              onClick={handleInstallAction}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-cyan-500/20 hover:from-indigo-500/30 hover:to-cyan-500/30 border border-indigo-500/40 text-indigo-200 hover:text-white text-xs font-semibold shadow-lg transition-all"
+              title="Install 3D Life OS to your desktop or phone home screen"
               aria-label="Install App"
             >
               <Download className="w-3.5 h-3.5 text-cyan-300" />
@@ -119,6 +132,14 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
         </div>
       </div>
+
+      {/* PWA Installation Guide Modal */}
+      <PWAInstallModal
+        isOpen={showInstallGuide}
+        onClose={() => setShowInstallGuide(false)}
+        canInstall={canInstall}
+        onInstall={install}
+      />
     </header>
   );
 };
