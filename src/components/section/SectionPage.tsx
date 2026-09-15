@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 
   Plus, 
@@ -9,7 +9,6 @@ import {
   Search, 
   Calendar, 
   Star, 
-  MoreVertical, 
   Edit2, 
   Trash2, 
   Copy, 
@@ -22,7 +21,7 @@ import { Section, Entry, SectionLayout } from '../../types';
 import { DynamicIcon } from '../common/DynamicIcon';
 import { EntryEditorModal } from '../editor/EntryEditorModal';
 import { EntryDetailModal } from '../editor/EntryDetailModal';
-import { useToast } from '../common/Toast';
+import { useToast } from '../common/ToastContext';
 
 interface SectionPageProps {
   section: Section;

@@ -17,10 +17,3 @@ export const DynamicIcon: React.FC<DynamicIconProps> = ({ name, className = 'w-5
 
   return <IconComponent className={className} width={size} height={size} {...props} />;
 };
-
-export const AVAILABLE_ICONS = [
-  'User', 'GraduationCap', 'Home', 'Users', 'Gamepad2', 'Globe', 'Briefcase', 
-  'Code', 'Trophy', 'Sparkles', 'BookOpen', 'Film', 'Music', 'Camera', 
-  'Target', 'Heart', 'Coffee', 'Cpu', 'Layers', 'Compass', 'Lightbulb',
-  'FileText', 'Bookmark', 'Activity', 'Shield', 'Flame', 'Zap', 'Star'
-];

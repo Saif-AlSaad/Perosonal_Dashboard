@@ -7,8 +7,6 @@ import {
   Edit3, 
   Copy, 
   Trash2, 
-  Image as ImageIcon, 
-  Video as VideoIcon, 
   Mic, 
   Maximize2 
 } from 'lucide-react';

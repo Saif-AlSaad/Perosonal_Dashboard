@@ -6,9 +6,7 @@ import {
   Upload, 
   Sliders, 
   Check, 
-  X, 
-  Sparkles, 
-  RotateCcw 
+  X 
 } from 'lucide-react';
 import { 
   ThemeConfig, 
@@ -17,7 +15,7 @@ import {
   BackgroundPreset 
 } from '../../types';
 import { THEME_PRESETS, applyTheme } from '../../services/theme';
-import { useToast } from '../common/Toast';
+import { useToast } from '../common/ToastContext';
 
 interface ThemeModalProps {
   isOpen: boolean;

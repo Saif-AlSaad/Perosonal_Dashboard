@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   X, 
   Calendar, 
@@ -22,11 +22,10 @@ import {
   Quote, 
   Code, 
   Upload, 
-  Check, 
-  Sparkles 
+  Check 
 } from 'lucide-react';
 import { Entry, MediaItem, Section } from '../../types';
-import { useToast } from '../common/Toast';
+import { useToast } from '../common/ToastContext';
 
 interface EntryEditorModalProps {
   isOpen: boolean;
@@ -36,8 +35,7 @@ interface EntryEditorModalProps {
   onSaveEntry: (entry: Entry, isNew: boolean) => void;
 }
 
-export const EntryEditorModal: React.FC<EntryEditorModalProps> = ({
-  isOpen,
+const EntryEditorModalContent: React.FC<EntryEditorModalProps> = ({
   onClose,
   section,
   existingEntry,
@@ -45,13 +43,15 @@ export const EntryEditorModal: React.FC<EntryEditorModalProps> = ({
 }) => {
   const { showToast } = useToast();
 
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState('');
-  const [content, setContent] = useState('');
-  const [tags, setTags] = useState<string[]>([]);
+  const [title, setTitle] = useState(existingEntry?.title || '');
+  const [date, setDate] = useState(
+    existingEntry?.date || new Date().toISOString().split('T')[0]
+  );
+  const [content, setContent] = useState(existingEntry?.content || '');
+  const [tags, setTags] = useState<string[]>(existingEntry?.tags || []);
   const [tagInput, setTagInput] = useState('');
-  const [media, setMedia] = useState<MediaItem[]>([]);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const [media, setMedia] = useState<MediaItem[]>(existingEntry?.media || []);
+  const [isFavorite, setIsFavorite] = useState(existingEntry?.isFavorite || false);
 
   // Audio Recording State
   const [isRecording, setIsRecording] = useState(false);
@@ -67,34 +67,12 @@ export const EntryEditorModal: React.FC<EntryEditorModalProps> = ({
   const audioInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    if (existingEntry) {
-      setTitle(existingEntry.title);
-      setDate(existingEntry.date);
-      setContent(existingEntry.content);
-      setTags(existingEntry.tags || []);
-      setMedia(existingEntry.media || []);
-      setIsFavorite(existingEntry.isFavorite || false);
-    } else {
-      setTitle('');
-      // Default to today in YYYY-MM-DD
-      const today = new Date().toISOString().split('T')[0];
-      setDate(today);
-      setContent('');
-      setTags([]);
-      setMedia([]);
-      setIsFavorite(false);
-    }
-  }, [existingEntry, isOpen]);
-
   // Clean up recording timer on unmount
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
-
-  if (!isOpen) return null;
 
   // Tag Handling
   const handleAddTag = (e?: React.KeyboardEvent) => {
@@ -694,4 +672,9 @@ export const EntryEditorModal: React.FC<EntryEditorModalProps> = ({
       </motion.div>
     </div>
   );
+};
+
+export const EntryEditorModal: React.FC<EntryEditorModalProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <EntryEditorModalContent key={props.existingEntry?.id || 'new'} {...props} />;
 };

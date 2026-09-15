@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Calendar, ArrowRight, FileText, Tag, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Search, X, Calendar, ArrowRight, Sparkles } from 'lucide-react';
 import { Section, Entry } from '../../types';
 
 interface GlobalSearchModalProps {

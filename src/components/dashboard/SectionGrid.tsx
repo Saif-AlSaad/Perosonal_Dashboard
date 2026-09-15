@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Plus, Sparkles } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Section, Entry } from '../../types';
 import { SectionCard } from './SectionCard';
-import { useToast } from '../common/Toast';
+import { useToast } from '../common/ToastContext';
 
 interface SectionGridProps {
   sections: Section[];

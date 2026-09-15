@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   UserProfile, 
   UserSettings, 
@@ -51,7 +50,8 @@ import { GlobalSearchModal } from './components/search/GlobalSearchModal';
 import { ThemeModal } from './components/theme/ThemeModal';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { EntryEditorModal } from './components/editor/EntryEditorModal';
-import { ToastProvider, useToast } from './components/common/Toast';
+import { ToastProvider } from './components/common/Toast';
+import { useToast } from './components/common/ToastContext';
 
 const DashboardContent: React.FC = () => {
   const { showToast } = useToast();
@@ -116,7 +116,16 @@ const DashboardContent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    loadAppData();
+    let active = true;
+    const fetchApp = async () => {
+      await loadAppData();
+    };
+    if (active) {
+      void fetchApp();
+    }
+    return () => {
+      active = false;
+    };
   }, [loadAppData]);
 
   // Activity tracking for Auto-Lock
@@ -294,7 +303,7 @@ const DashboardContent: React.FC = () => {
     <div className="relative min-h-screen w-full flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
       {/* Background and 3D Canvas Layers */}
       <BackgroundLayer config={settings.background} />
-      <ThreeScene enabled={settings.enable3D && !settings.reducedMotion} />
+      <ThreeScene enabled={settings.enable3D && !settings.reducedMotion} theme={settings.theme} />
 
       {/* Main Top Header */}
       <Header

@@ -11,7 +11,7 @@ import {
   Edit3 
 } from 'lucide-react';
 import { UserProfile } from '../../types';
-import { useToast } from '../common/Toast';
+import { useToast } from '../common/ToastContext';
 
 interface ProfileCardProps {
   profile: UserProfile;

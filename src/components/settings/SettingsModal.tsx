@@ -13,13 +13,12 @@ import {
   Sparkles, 
   Lock, 
   Eye, 
-  EyeOff, 
-  RotateCcw 
+  EyeOff 
 } from 'lucide-react';
 import { UserProfile, UserSettings } from '../../types';
 import { hashPasskey } from '../../services/auth';
 import { exportAllData, importData, resetDatabaseToSeed } from '../../services/db';
-import { useToast } from '../common/Toast';
+import { useToast } from '../common/ToastContext';
 
 interface SettingsModalProps {
   isOpen: boolean;

@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { ArrowUpRight, MoreVertical, Edit2, Trash2, GripVertical } from 'lucide-react';
 import { Section } from '../../types';
 import { DynamicIcon } from '../common/DynamicIcon';

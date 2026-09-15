@@ -4,8 +4,7 @@ import {
   UserSettings, 
   Section, 
   Entry, 
-  ActivityItem, 
-  ThemeConfig 
+  ActivityItem 
 } from '../types';
 import { hashPasskey } from './auth';
 import { THEME_PRESETS } from './theme';

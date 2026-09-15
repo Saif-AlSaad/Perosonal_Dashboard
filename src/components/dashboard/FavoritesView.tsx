@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, ArrowLeft, Calendar, Tag, ExternalLink } from 'lucide-react';
+import { Star, ArrowLeft, Calendar } from 'lucide-react';
 import { Entry, Section } from '../../types';
 
 interface FavoritesViewProps {

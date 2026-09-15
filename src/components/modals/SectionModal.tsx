@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Check, FolderPlus, Edit, Sparkles, LayoutGrid, GitCommitVertical, BookOpen } from 'lucide-react';
+import { X, Check, FolderPlus, Edit, LayoutGrid, GitCommitVertical, BookOpen } from 'lucide-react';
 import { Section, SectionLayout } from '../../types';
-import { AVAILABLE_ICONS, DynamicIcon } from '../common/DynamicIcon';
-import { useToast } from '../common/Toast';
+import { DynamicIcon } from '../common/DynamicIcon';
+import { AVAILABLE_ICONS } from '../../constants/icons';
+import { useToast } from '../common/ToastContext';
 
 interface SectionModalProps {
   isOpen: boolean;
@@ -13,8 +14,18 @@ interface SectionModalProps {
   existingCount: number;
 }
 
-export const SectionModal: React.FC<SectionModalProps> = ({
-  isOpen,
+const presetColors = [
+  '#6366f1', // Indigo
+  '#06b6d4', // Cyan
+  '#a855f7', // Purple
+  '#ec4899', // Pink
+  '#10b981', // Emerald
+  '#f59e0b', // Amber
+  '#f43f5e', // Rose
+  '#3b82f6', // Blue
+];
+
+const SectionModalContent: React.FC<SectionModalProps> = ({
   onClose,
   sectionToEdit,
   onSave,
@@ -22,40 +33,11 @@ export const SectionModal: React.FC<SectionModalProps> = ({
 }) => {
   const { showToast } = useToast();
 
-  const [name, setName] = useState('');
-  const [icon, setIcon] = useState('Sparkles');
-  const [description, setDescription] = useState('');
-  const [color, setColor] = useState('#6366f1');
-  const [layout, setLayout] = useState<SectionLayout>('grid');
-
-  const presetColors = [
-    '#6366f1', // Indigo
-    '#06b6d4', // Cyan
-    '#a855f7', // Purple
-    '#ec4899', // Pink
-    '#10b981', // Emerald
-    '#f59e0b', // Amber
-    '#f43f5e', // Rose
-    '#3b82f6', // Blue
-  ];
-
-  useEffect(() => {
-    if (sectionToEdit) {
-      setName(sectionToEdit.name);
-      setIcon(sectionToEdit.icon);
-      setDescription(sectionToEdit.description);
-      setColor(sectionToEdit.color);
-      setLayout(sectionToEdit.layout);
-    } else {
-      setName('');
-      setIcon('BookOpen');
-      setDescription('');
-      setColor('#6366f1');
-      setLayout('grid');
-    }
-  }, [sectionToEdit, isOpen]);
-
-  if (!isOpen) return null;
+  const [name, setName] = useState(sectionToEdit?.name || '');
+  const [icon, setIcon] = useState(sectionToEdit?.icon || 'BookOpen');
+  const [description, setDescription] = useState(sectionToEdit?.description || '');
+  const [color, setColor] = useState(sectionToEdit?.color || '#6366f1');
+  const [layout, setLayout] = useState<SectionLayout>(sectionToEdit?.layout || 'grid');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -262,4 +244,9 @@ export const SectionModal: React.FC<SectionModalProps> = ({
       </motion.div>
     </div>
   );
+};
+
+export const SectionModal: React.FC<SectionModalProps> = (props) => {
+  if (!props.isOpen) return null;
+  return <SectionModalContent key={props.sectionToEdit?.id || 'new'} {...props} />;
 };
