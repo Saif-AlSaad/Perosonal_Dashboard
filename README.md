@@ -93,19 +93,8 @@ git remote add origin https://github.com/<YOUR_USERNAME>/<YOUR_REPOSITORY>.git
 git push -u origin main
 ```
 
-### Step 2: Enable GitHub Pages
+### Author
+*Saif Al Saad* <br>
+*Software Engineering* <br>
+*Daffodil International University*
 
-1. Open your repository on GitHub.
-2. Go to **Settings** > **Pages** (in the left sidebar).
-3. Under **Build and deployment** > **Source**, select **`GitHub Actions`**.
-4. GitHub Actions will automatically run the deployment workflow (`.github/workflows/deploy.yml`).
-5. Once the action finishes (typically 1–2 minutes), your live site will be accessible at:
-   ```
-   https://<YOUR_USERNAME>.github.io/<YOUR_REPOSITORY>/
-   ```
-
----
-
-## 📄 License
-
-MIT License. Free to use, customize, and explore.
