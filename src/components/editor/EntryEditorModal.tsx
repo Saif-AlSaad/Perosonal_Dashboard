@@ -32,6 +32,7 @@ interface EntryEditorModalProps {
   onClose: () => void;
   section: Section;
   existingEntry?: Entry | null;
+  initialDraft?: { title?: string; content?: string } | null;
   onSaveEntry: (entry: Entry, isNew: boolean) => void;
 }
 
@@ -39,15 +40,16 @@ const EntryEditorModalContent: React.FC<EntryEditorModalProps> = ({
   onClose,
   section,
   existingEntry,
+  initialDraft,
   onSaveEntry,
 }) => {
   const { showToast } = useToast();
 
-  const [title, setTitle] = useState(existingEntry?.title || '');
+  const [title, setTitle] = useState(existingEntry?.title || initialDraft?.title || '');
   const [date, setDate] = useState(
     existingEntry?.date || new Date().toISOString().split('T')[0]
   );
-  const [content, setContent] = useState(existingEntry?.content || '');
+  const [content, setContent] = useState(existingEntry?.content || initialDraft?.content || '');
   const [tags, setTags] = useState<string[]>(existingEntry?.tags || []);
   const [tagInput, setTagInput] = useState('');
   const [media, setMedia] = useState<MediaItem[]>(existingEntry?.media || []);
@@ -676,5 +678,5 @@ const EntryEditorModalContent: React.FC<EntryEditorModalProps> = ({
 
 export const EntryEditorModal: React.FC<EntryEditorModalProps> = (props) => {
   if (!props.isOpen) return null;
-  return <EntryEditorModalContent key={props.existingEntry?.id || 'new'} {...props} />;
+  return <EntryEditorModalContent key={props.existingEntry?.id || (props.initialDraft?.title ? 'draft' : 'new')} {...props} />;
 };

@@ -52,6 +52,7 @@ import { SettingsModal } from './components/settings/SettingsModal';
 import { EntryEditorModal } from './components/editor/EntryEditorModal';
 import { ToastProvider } from './components/common/Toast';
 import { useToast } from './components/common/ToastContext';
+import { BentoHub } from './components/dashboard/bento/BentoHub';
 
 const DashboardContent: React.FC = () => {
   const { showToast } = useToast();
@@ -76,6 +77,18 @@ const DashboardContent: React.FC = () => {
   const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
   const [sectionToEdit, setSectionToEdit] = useState<Section | null>(null);
   const [quickEntrySection, setQuickEntrySection] = useState<Section | null>(null);
+  const [quickEntryDraft, setQuickEntryDraft] = useState<{ title?: string; content?: string } | null>(null);
+
+  // Handle converting scratchpad text into an entry
+  const handleConvertScratchpadToEntry = useCallback((data: { title: string; content: string }) => {
+    const targetSection = activeSection || sections[0];
+    if (targetSection) {
+      setQuickEntryDraft(data);
+      setQuickEntrySection(targetSection);
+    } else {
+      showToast('Please create a section first', 'info');
+    }
+  }, [activeSection, sections, showToast]);
 
   // Load Data
   const loadAppData = useCallback(async () => {
@@ -352,6 +365,13 @@ const DashboardContent: React.FC = () => {
               onFilterFavorites={() => setShowFavoritesView(true)}
             />
 
+            {/* Modular Bento Hub: Focus Clock, Audio Soundscapes, Scratchpad, Activity Matrix */}
+            <BentoHub
+              entries={entries}
+              activities={activities}
+              onConvertToEntry={handleConvertScratchpadToEntry}
+            />
+
             {/* 3D Section Realms Grid */}
             <SectionGrid
               sections={sections}
@@ -451,8 +471,12 @@ const DashboardContent: React.FC = () => {
       {quickEntrySection && (
         <EntryEditorModal
           isOpen={true}
-          onClose={() => setQuickEntrySection(null)}
+          onClose={() => {
+            setQuickEntrySection(null);
+            setQuickEntryDraft(null);
+          }}
           section={quickEntrySection}
+          initialDraft={quickEntryDraft}
           onSaveEntry={handleSaveEntry}
         />
       )}

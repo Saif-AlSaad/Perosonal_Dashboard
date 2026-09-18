@@ -17,6 +17,7 @@
     --theme-card-hover-border: rgba(99, 102, 241, 0.35);
     --theme-glass-blur: 16px;
     --theme-glass-opacity: 0.65;
+    --focus-accent: #6366f1;
   }
 
   * {
