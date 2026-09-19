@@ -112,7 +112,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
   const scenePresets: { id: Scene3DPreset; name: string; emoji: string; desc: string; gradientFrom: string; gradientTo: string }[] = [
     { id: 'cosmic-drift', name: 'Cosmic Drift', emoji: '🌠', desc: 'Floating glass crystals & cosmic stardust with shockwave ripples', gradientFrom: '#6366f1', gradientTo: '#06b6d4' },
     { id: 'galaxy-spiral', name: 'Galaxy Spiral', emoji: '🌌', desc: 'Logarithmic spiral arms with shooting stars & luminous core', gradientFrom: '#7c3aed', gradientTo: '#ec4899' },
-    { id: 'neural-plexus', name: 'Neural Plexus', emoji: '🧠', desc: 'Interconnected glowing nodes with synaptic pulses & mouse gravity', gradientFrom: '#14b8a6', gradientTo: '#6366f1' },
+    { id: 'earth-globe', name: 'Earth Globe', emoji: '🌍', desc: 'Realistic spinning Earth with drifting clouds, LEO space debris & orbital satellite paths', gradientFrom: '#0284c7', gradientTo: '#10b981' },
     { id: 'aurora-waves', name: 'Aurora Waves', emoji: '🌊', desc: 'Flowing parametric silk ribbons with bioluminescent floating orbs', gradientFrom: '#06b6d4', gradientTo: '#a855f7' },
     { id: 'cyber-grid', name: 'Cyber Grid', emoji: '⚡', desc: 'Infinite neon terrain with scrolling noise hills & wireframe sun', gradientFrom: '#f43f5e', gradientTo: '#f59e0b' },
     { id: 'exoplanet', name: 'Exoplanet', emoji: '🪐', desc: 'Ringed glass planet with kinetic orbital gyroscope & moonlets', gradientFrom: '#8b5cf6', gradientTo: '#06b6d4' },
@@ -121,7 +121,8 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
   const handleSceneSelect = (presetId: Scene3DPreset) => {
     setSelectedScene(presetId);
     onSaveScene(presetId);
-    showToast(`3D scene switched to ${presetId}`, 'success');
+    const sceneName = scenePresets.find(s => s.id === presetId)?.name || presetId;
+    showToast(`3D scene switched to ${sceneName}`, 'success');
   };
 
   const handleCustomBgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -511,7 +512,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {scenePresets.map(sp => {
-                    const isSelected = selectedScene === sp.id;
+                    const isSelected = selectedScene === sp.id || (sp.id === 'earth-globe' && (selectedScene as string) === 'neural-plexus');
                     return (
                       <div
                         key={sp.id}

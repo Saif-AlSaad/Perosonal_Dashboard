@@ -442,9 +442,100 @@ function buildGalaxySpiral(
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// Scene 3: NEURAL PLEXUS — Connected nodes + synaptic pulses
+// Scene 3: EARTH GLOBE — Photorealistic spinning Earth, LEO debris, orbital tracking
 // ═══════════════════════════════════════════════════════════════════
-function buildNeuralPlexus(
+function makeProceduralEarthTexture(): THREE.Texture {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d')!;
+
+  // Deep oceanic gradient
+  const oceanGrad = ctx.createLinearGradient(0, 0, 0, 512);
+  oceanGrad.addColorStop(0, '#0a2342');
+  oceanGrad.addColorStop(0.5, '#0d3868');
+  oceanGrad.addColorStop(1, '#081c33');
+  ctx.fillStyle = oceanGrad;
+  ctx.fillRect(0, 0, 1024, 512);
+
+  // Ocean shelf / shallow waters
+  ctx.fillStyle = '#145388';
+  ctx.beginPath();
+  ctx.ellipse(320, 240, 160, 180, 0, 0, Math.PI * 2);
+  ctx.ellipse(540, 260, 130, 140, 0, 0, Math.PI * 2);
+  ctx.ellipse(720, 220, 200, 160, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Continents: Africa & Europe
+  ctx.fillStyle = '#2f6d3a';
+  // Africa
+  ctx.beginPath();
+  ctx.moveTo(510, 170);
+  ctx.bezierCurveTo(550, 170, 580, 200, 570, 240);
+  ctx.bezierCurveTo(580, 290, 550, 360, 520, 380);
+  ctx.bezierCurveTo(500, 370, 480, 310, 470, 260);
+  ctx.bezierCurveTo(450, 230, 460, 190, 510, 170);
+  ctx.fill();
+
+  // Sahara / Arabian desert
+  ctx.fillStyle = '#bfa15f';
+  ctx.beginPath();
+  ctx.ellipse(520, 210, 60, 30, 0.1, 0, Math.PI * 2);
+  ctx.ellipse(580, 215, 30, 20, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Europe & Eurasia
+  ctx.fillStyle = '#3b7a42';
+  ctx.beginPath();
+  ctx.ellipse(520, 130, 55, 35, 0, 0, Math.PI * 2);
+  ctx.ellipse(680, 140, 180, 65, 0, 0, Math.PI * 2);
+  ctx.ellipse(780, 240, 90, 60, 0.3, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Americas
+  ctx.fillStyle = '#346b3b';
+  // North America
+  ctx.beginPath();
+  ctx.ellipse(240, 140, 100, 65, -0.2, 0, Math.PI * 2);
+  ctx.fill();
+  // South America
+  ctx.beginPath();
+  ctx.moveTo(310, 270);
+  ctx.bezierCurveTo(360, 280, 370, 340, 340, 410);
+  ctx.bezierCurveTo(310, 440, 290, 380, 280, 320);
+  ctx.bezierCurveTo(275, 290, 290, 270, 310, 270);
+  ctx.fill();
+
+  // Australia
+  ctx.fillStyle = '#9e7d47';
+  ctx.beginPath();
+  ctx.ellipse(840, 340, 45, 35, 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Polar ice caps
+  ctx.fillStyle = '#e8f4f8';
+  // Antarctica
+  ctx.fillRect(0, 470, 1024, 42);
+  // Arctic
+  ctx.fillRect(0, 0, 1024, 32);
+
+  // Soft atmospheric cloud overlay on canvas
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+  for (let i = 0; i < 40; i++) {
+    const cx = (i * 27) % 1024;
+    const cy = 60 + (i * 39) % 380;
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, 50 + (i % 3) * 30, 12 + (i % 2) * 8, (i % 5) * 0.3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.ClampToEdgeWrapping;
+  return tex;
+}
+
+function buildEarthGlobe(
   scene: THREE.Scene,
   primary: string,
   accent: string,
@@ -452,249 +543,434 @@ function buildNeuralPlexus(
   const disposables: (THREE.BufferGeometry | THREE.Material | THREE.Texture)[] = [];
   const objects: THREE.Object3D[] = [];
 
-  const light1 = new THREE.PointLight(new THREE.Color(primary), 2, 60);
-  light1.position.set(8, 8, 8);
-  scene.add(light1);
-  objects.push(light1);
+  // Root group for Earth system (with axial tilt ~23.4° / 0.41 rad)
+  const earthSystem = new THREE.Group();
+  earthSystem.position.set(-3.2, 0.2, 0);
+  earthSystem.rotation.z = 0.41; // Earth's natural axial tilt
+  scene.add(earthSystem);
+  objects.push(earthSystem);
 
-  const light2 = new THREE.PointLight(new THREE.Color(accent), 2, 60);
-  light2.position.set(-8, -8, 8);
-  scene.add(light2);
-  objects.push(light2);
+  // 1. Lighting: Directional Sun (from top-left, matching the reference photo)
+  const sunLight = new THREE.DirectionalLight(0xfff6ea, 3.4);
+  sunLight.position.set(-25, 20, 22);
+  scene.add(sunLight);
+  objects.push(sunLight);
 
-  // Nodes
-  const nodeCount = 140;
-  const connectionDist = 7;
-  const nodeGeo = new THREE.SphereGeometry(0.12, 12, 12);
-  const nodeMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color(primary),
-    transparent: true,
-    opacity: 0.85,
+  // Soft ambient to reveal dark side continents & deep space depth
+  const ambientLight = new THREE.AmbientLight(0x0c1626, 0.6);
+  scene.add(ambientLight);
+  objects.push(ambientLight);
+
+  // Subtle rim light on the night edge
+  const rimLight = new THREE.PointLight(new THREE.Color(accent), 1.6, 50);
+  rimLight.position.set(16, -10, -8);
+  scene.add(rimLight);
+  objects.push(rimLight);
+
+  // 2. Earth Globe Sphere
+  const earthRadius = 6.2;
+  const earthGeo = new THREE.SphereGeometry(earthRadius, 64, 64);
+  const fallbackTex = makeProceduralEarthTexture();
+  disposables.push(fallbackTex);
+
+  const earthMat = new THREE.MeshStandardMaterial({
+    map: fallbackTex,
+    roughness: 0.62,
+    metalness: 0.12,
   });
-  disposables.push(nodeGeo, nodeMat);
+  disposables.push(earthGeo, earthMat);
 
-  interface NodeData {
-    mesh: THREE.Mesh;
-    vel: THREE.Vector3;
-    basePos: THREE.Vector3;
+  const earthMesh = new THREE.Mesh(earthGeo, earthMat);
+  earthSystem.add(earthMesh);
+
+  // Asynchronously load high-res NASA satellite Earth texture
+  const textureLoader = new THREE.TextureLoader();
+  textureLoader.load(
+    '/textures/earth.jpg',
+    (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.ClampToEdgeWrapping;
+      earthMat.map = tex;
+      earthMat.needsUpdate = true;
+      disposables.push(tex);
+    },
+    undefined,
+    () => {
+      // Procedural fallback already active
+    }
+  );
+
+  // 3. Drifting Clouds Layer Sphere (slightly larger, rotating independently)
+  const cloudGeo = new THREE.SphereGeometry(earthRadius * 1.014, 64, 64);
+  const cloudMat = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.42,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    roughness: 0.9,
+  });
+  disposables.push(cloudGeo, cloudMat);
+
+  const cloudMesh = new THREE.Mesh(cloudGeo, cloudMat);
+  earthSystem.add(cloudMesh);
+
+  textureLoader.load(
+    '/textures/earth_clouds.jpg',
+    (cTex) => {
+      cTex.wrapS = THREE.RepeatWrapping;
+      cTex.wrapT = THREE.ClampToEdgeWrapping;
+      cloudMat.map = cTex;
+      cloudMat.alphaMap = cTex;
+      cloudMat.needsUpdate = true;
+      disposables.push(cTex);
+    }
+  );
+
+  // 4. Atmospheric Fresnel Glow (Luminescent sky-blue limb)
+  const atmoGeo = new THREE.SphereGeometry(earthRadius * 1.045, 64, 64);
+  const atmoVertexShader = `
+    varying vec3 vNormal;
+    varying vec3 vViewPosition;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+      vViewPosition = -mvPosition.xyz;
+      gl_Position = projectionMatrix * mvPosition;
+    }
+  `;
+  const atmoFragmentShader = `
+    uniform vec3 atmoColor;
+    uniform vec3 sunDir;
+    varying vec3 vNormal;
+    varying vec3 vViewPosition;
+    void main() {
+      vec3 viewDir = normalize(vViewPosition);
+      float rim = 1.0 - max(dot(vNormal, viewDir), 0.0);
+      float intensity = pow(rim, 2.8);
+      // Brighten sunlit crescent
+      float sunAlign = max(dot(vNormal, normalize(sunDir)), 0.0);
+      float daylight = 0.25 + 0.75 * sunAlign;
+      gl_FragColor = vec4(atmoColor, intensity * daylight * 0.9);
+    }
+  `;
+  const atmoMat = new THREE.ShaderMaterial({
+    vertexShader: atmoVertexShader,
+    fragmentShader: atmoFragmentShader,
+    uniforms: {
+      atmoColor: { value: new THREE.Color('#38bdf8') },
+      sunDir: { value: new THREE.Vector3(-25, 20, 22) },
+    },
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    side: THREE.BackSide,
+    depthWrite: false,
+  });
+  disposables.push(atmoGeo, atmoMat);
+
+  const atmoMesh = new THREE.Mesh(atmoGeo, atmoMat);
+  earthSystem.add(atmoMesh);
+
+  // 5. Low Earth Orbit (LEO) Space Debris Cloud (Matches reference image swarm)
+  const debrisCount = 480;
+  const debrisGeo = new THREE.BufferGeometry();
+  const debrisPositions = new Float32Array(debrisCount * 3);
+  const debrisColors = new Float32Array(debrisCount * 3);
+
+  interface DebrisOrbitalParam {
+    radius: number;
+    inclination: number;
+    raan: number; // Right ascension of ascending node
+    speed: number;
+    phase: number;
   }
-  const nodes: NodeData[] = [];
-  const group = new THREE.Group();
+  const debrisParams: DebrisOrbitalParam[] = [];
 
-  for (let i = 0; i < nodeCount; i++) {
-    const m = new THREE.Mesh(nodeGeo, nodeMat);
-    const p = new THREE.Vector3(
-      (Math.random() - 0.5) * 35,
-      (Math.random() - 0.5) * 25,
-      (Math.random() - 0.5) * 20,
-    );
-    m.position.copy(p);
-    const glowScale = 0.8 + Math.random() * 0.5;
-    m.scale.setScalar(glowScale);
-    group.add(m);
-    nodes.push({
-      mesh: m,
-      vel: new THREE.Vector3(
-        (Math.random() - 0.5) * 0.4,
-        (Math.random() - 0.5) * 0.4,
-        (Math.random() - 0.5) * 0.2,
-      ),
-      basePos: p.clone(),
-    });
+  for (let i = 0; i < debrisCount; i++) {
+    const r = earthRadius * (1.04 + Math.random() * 0.22); // Close orbit: ~6.4 to ~7.6
+    const inc = (Math.random() - 0.5) * 1.8; // Varied orbital planes
+    const raan = Math.random() * Math.PI * 2;
+    // Keplerian velocity approximation: closer objects orbit faster
+    const spd = (0.28 / Math.sqrt(r / earthRadius)) * (0.8 + Math.random() * 0.4);
+    const phase = Math.random() * Math.PI * 2;
+
+    debrisParams.push({ radius: r, inclination: inc, raan, speed: spd, phase });
+
+    // Initial position
+    const u = phase;
+    const xOrb = r * Math.cos(u);
+    const yOrb = r * Math.sin(u) * Math.cos(inc);
+    const zOrb = r * Math.sin(u) * Math.sin(inc);
+
+    debrisPositions[i * 3] = xOrb * Math.cos(raan) - zOrb * Math.sin(raan);
+    debrisPositions[i * 3 + 1] = yOrb;
+    debrisPositions[i * 3 + 2] = xOrb * Math.sin(raan) + zOrb * Math.cos(raan);
+
+    // Silvery / metallic debris speck colors with subtle brightness variation
+    const b = 0.55 + Math.random() * 0.45;
+    debrisColors[i * 3] = b;
+    debrisColors[i * 3 + 1] = b * 0.96;
+    debrisColors[i * 3 + 2] = b * 0.98;
   }
-  scene.add(group);
-  objects.push(group);
 
-  // Connection lines
-  const lineGeo = new THREE.BufferGeometry();
-  const maxLines = 600;
-  const linePositions = new Float32Array(maxLines * 6);
-  const lineColors = new Float32Array(maxLines * 6);
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-  lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
-  lineGeo.setDrawRange(0, 0);
+  debrisGeo.setAttribute('position', new THREE.BufferAttribute(debrisPositions, 3));
+  debrisGeo.setAttribute('color', new THREE.BufferAttribute(debrisColors, 3));
 
-  const lineMat = new THREE.LineBasicMaterial({
+  const debrisTex = makeParticleTexture();
+  const debrisMat = new THREE.PointsMaterial({
+    size: 0.1,
+    map: debrisTex,
     vertexColors: true,
     transparent: true,
-    opacity: 0.35,
-    blending: THREE.AdditiveBlending,
+    opacity: 0.85,
     depthWrite: false,
   });
-  const lines = new THREE.LineSegments(lineGeo, lineMat);
-  scene.add(lines);
-  objects.push(lines);
-  disposables.push(lineGeo, lineMat);
+  disposables.push(debrisGeo, debrisMat, debrisTex);
 
-  // Synaptic pulse particles
-  const pulseGeo = new THREE.BufferGeometry();
-  const pulseCount = 80;
-  const pulsePos = new Float32Array(pulseCount * 3);
-  pulseGeo.setAttribute('position', new THREE.BufferAttribute(pulsePos, 3));
+  const debrisPoints = new THREE.Points(debrisGeo, debrisMat);
+  earthSystem.add(debrisPoints);
 
-  const pulseTex = makeParticleTexture();
-  const pulseMat = new THREE.PointsMaterial({
-    size: 0.25,
-    map: pulseTex,
-    transparent: true,
-    color: new THREE.Color(accent),
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-    opacity: 0.8,
-  });
-  const pulsePoints = new THREE.Points(pulseGeo, pulseMat);
-  scene.add(pulsePoints);
-  objects.push(pulsePoints);
-  disposables.push(pulseGeo, pulseMat, pulseTex);
-
-  interface Pulse {
-    from: THREE.Vector3;
-    to: THREE.Vector3;
-    t: number;
+  // 6. Orbital Trajectory Curves & Satellites (Red / Coral Tracking Paths)
+  interface TrajectoryData {
+    curvePoints: THREE.Vector3[];
+    lineMesh: THREE.Line;
+    satellite: THREE.Group;
+    beaconMesh: THREE.Mesh;
     speed: number;
-    idx: number;
+    phase: number;
+    pulsePos: number;
   }
-  const pulses: Pulse[] = [];
-  let pulseSpawnTimer = 0;
-  let activePulseIdx = 0;
+  const trajectories: TrajectoryData[] = [];
+  const trajectoryGroup = new THREE.Group();
+  earthSystem.add(trajectoryGroup);
+  objects.push(trajectoryGroup);
 
-  // Mouse gravity
-  let mouseWorldX = 0;
-  let mouseWorldY = 0;
+  const trackConfigs = [
+    {
+      radiusX: 8.4,
+      radiusY: 8.4,
+      rotX: 0.45,
+      rotZ: -0.3,
+      colorHex: '#f43f5e',
+      speed: 0.14,
+    },
+    {
+      radiusX: 10.6,
+      radiusY: 8.8,
+      rotX: 1.15,
+      rotZ: 0.5,
+      colorHex: '#fb7185',
+      speed: 0.10,
+    },
+    {
+      radiusX: 12.8,
+      radiusY: 9.6,
+      rotX: -0.65,
+      rotZ: 0.85,
+      colorHex: '#e11d48',
+      speed: 0.08,
+    },
+  ];
+
+  const satBodyGeo = new THREE.BoxGeometry(0.18, 0.12, 0.12);
+  const satWingGeo = new THREE.BoxGeometry(0.65, 0.02, 0.16);
+  const satBodyMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.8, roughness: 0.3 });
+  const satWingMat = new THREE.MeshStandardMaterial({ color: 0x1e3a8a, metalness: 0.9, roughness: 0.2 });
+  disposables.push(satBodyGeo, satWingGeo, satBodyMat, satWingMat);
+
+  for (const cfg of trackConfigs) {
+    const segments = 128;
+    const curvePoints: THREE.Vector3[] = [];
+    for (let i = 0; i <= segments; i++) {
+      const theta = (i / segments) * Math.PI * 2;
+      const pt = new THREE.Vector3(
+        Math.cos(theta) * cfg.radiusX,
+        Math.sin(theta) * cfg.radiusY,
+        0
+      );
+      pt.applyEuler(new THREE.Euler(cfg.rotX, 0, cfg.rotZ));
+      curvePoints.push(pt);
+    }
+
+    const trackLineGeo = new THREE.BufferGeometry().setFromPoints(curvePoints);
+    const trackLineMat = new THREE.LineBasicMaterial({
+      color: new THREE.Color(cfg.colorHex),
+      transparent: true,
+      opacity: 0.65,
+      blending: THREE.AdditiveBlending,
+    });
+    disposables.push(trackLineGeo, trackLineMat);
+
+    const lineMesh = new THREE.Line(trackLineGeo, trackLineMat);
+    trajectoryGroup.add(lineMesh);
+
+    // Satellite model assembly
+    const satGroup = new THREE.Group();
+    const body = new THREE.Mesh(satBodyGeo, satBodyMat);
+    const wing = new THREE.Mesh(satWingGeo, satWingMat);
+    satGroup.add(body);
+    satGroup.add(wing);
+
+    // Glowing red beacon dot on satellite
+    const beaconGeo = new THREE.SphereGeometry(0.12, 10, 10);
+    const beaconMat = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(cfg.colorHex),
+      transparent: true,
+      opacity: 0.95,
+    });
+    disposables.push(beaconGeo, beaconMat);
+    const beaconMesh = new THREE.Mesh(beaconGeo, beaconMat);
+    beaconMesh.position.set(0, 0.12, 0);
+    satGroup.add(beaconMesh);
+
+    trajectoryGroup.add(satGroup);
+
+    trajectories.push({
+      curvePoints,
+      lineMesh,
+      satellite: satGroup,
+      beaconMesh,
+      speed: cfg.speed,
+      phase: Math.random() * Math.PI * 2,
+      pulsePos: 0,
+    });
+  }
+
+  // 7. Background Starfield
+  const starCount = 550;
+  const starGeo = new THREE.BufferGeometry();
+  const starPos = new Float32Array(starCount * 3);
+  const starCols = new Float32Array(starCount * 3);
+  for (let i = 0; i < starCount; i++) {
+    starPos[i * 3] = (Math.random() - 0.5) * 90;
+    starPos[i * 3 + 1] = (Math.random() - 0.5) * 70;
+    starPos[i * 3 + 2] = -25 - Math.random() * 35;
+    const br = 0.35 + Math.random() * 0.65;
+    starCols[i * 3] = br;
+    starCols[i * 3 + 1] = br * 0.98;
+    starCols[i * 3 + 2] = br * 1.05;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  starGeo.setAttribute('color', new THREE.BufferAttribute(starCols, 3));
+
+  const starMat = new THREE.PointsMaterial({
+    size: 0.14,
+    map: debrisTex,
+    vertexColors: true,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+  disposables.push(starGeo, starMat);
+  const stars = new THREE.Points(starGeo, starMat);
+  scene.add(stars);
+  objects.push(stars);
+
+  // 8. Ground Ping / Radar wave on click
+  const pingGeo = new THREE.RingGeometry(0.1, 0.3, 32);
+  const pingMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(accent),
+    transparent: true,
+    opacity: 0,
+    side: THREE.DoubleSide,
+    blending: THREE.AdditiveBlending,
+  });
+  disposables.push(pingGeo, pingMat);
+  const pingMesh = new THREE.Mesh(pingGeo, pingMat);
+  pingMesh.position.set(0, 0, earthRadius + 0.1);
+  earthSystem.add(pingMesh);
+  let pingActive = false;
+  let pingScale = 0.1;
+  let pingOpacity = 0;
 
   return {
     objects,
     disposables,
     update(delta, elapsed, mouseX, mouseY) {
-      mouseWorldX = mouseX * 25;
-      mouseWorldY = -mouseY * 18;
+      // Smooth Earth planet rotation
+      earthMesh.rotation.y = elapsed * 0.038;
 
-      // Move nodes
-      for (const nd of nodes) {
-        nd.mesh.position.addScaledVector(nd.vel, delta);
-        // Gentle drift + boundaries
-        const drift = 0.15;
-        nd.mesh.position.x += Math.sin(elapsed * 0.3 + nd.basePos.x) * drift * delta;
-        nd.mesh.position.y += Math.cos(elapsed * 0.4 + nd.basePos.y) * drift * delta;
+      // Independent cloud motion
+      cloudMesh.rotation.y = elapsed * 0.048;
 
-        // Mouse gravity pull
-        const dx = mouseWorldX - nd.mesh.position.x;
-        const dy = mouseWorldY - nd.mesh.position.y;
-        const distMouse = Math.sqrt(dx * dx + dy * dy);
-        if (distMouse < 10) {
-          const pull = (1 - distMouse / 10) * 2.5 * delta;
-          nd.mesh.position.x += dx * pull;
-          nd.mesh.position.y += dy * pull;
-        }
+      // Debris cloud Keplerian orbital animation
+      const posAttr = debrisGeo.attributes.position as THREE.BufferAttribute;
+      const posArr = posAttr.array as Float32Array;
 
-        // Return to bounds
-        if (Math.abs(nd.mesh.position.x) > 20) nd.vel.x *= -1;
-        if (Math.abs(nd.mesh.position.y) > 14) nd.vel.y *= -1;
-        if (Math.abs(nd.mesh.position.z) > 12) nd.vel.z *= -1;
+      for (let i = 0; i < debrisCount; i++) {
+        const p = debrisParams[i];
+        const u = elapsed * p.speed + p.phase;
+        const xOrb = p.radius * Math.cos(u);
+        const yOrb = p.radius * Math.sin(u) * Math.cos(p.inclination);
+        const zOrb = p.radius * Math.sin(u) * Math.sin(p.inclination);
 
-        // Gentle pulsing glow
-        const pulse = 0.8 + Math.sin(elapsed * 2 + nd.basePos.x * 0.5) * 0.3;
-        nd.mesh.scale.setScalar(pulse);
+        posArr[i * 3] = xOrb * Math.cos(p.raan) - zOrb * Math.sin(p.raan);
+        posArr[i * 3 + 1] = yOrb;
+        posArr[i * 3 + 2] = xOrb * Math.sin(p.raan) + zOrb * Math.cos(p.raan);
+      }
+      posAttr.needsUpdate = true;
+
+      // Satellites along trajectory curves
+      for (const t of trajectories) {
+        const u = (elapsed * t.speed + t.phase) % (Math.PI * 2);
+        const normT = (u / (Math.PI * 2));
+        const idxFloat = normT * (t.curvePoints.length - 1);
+        const idx = Math.floor(idxFloat);
+        const frac = idxFloat - idx;
+        const p1 = t.curvePoints[idx];
+        const p2 = t.curvePoints[Math.min(idx + 1, t.curvePoints.length - 1)];
+
+        t.satellite.position.lerpVectors(p1, p2, frac);
+
+        // Orient satellite forward along trajectory
+        t.satellite.lookAt(p2);
+
+        // Pulsing red satellite beacon
+        const beaconPulse = 0.8 + Math.sin(elapsed * 5 + t.phase) * 0.4;
+        t.beaconMesh.scale.setScalar(beaconPulse);
       }
 
-      // Build connections
-      let lineCount = 0;
-      const pc = new THREE.Color(primary);
-      const ac = new THREE.Color(accent);
+      // Mouse Parallax
+      earthSystem.rotation.x = mouseY * -0.22;
+      earthSystem.rotation.y = mouseX * 0.35;
 
-      for (let i = 0; i < nodeCount && lineCount < maxLines; i++) {
-        for (let j = i + 1; j < nodeCount && lineCount < maxLines; j++) {
-          const dist = nodes[i].mesh.position.distanceTo(nodes[j].mesh.position);
-          if (dist < connectionDist) {
-            const alpha = 1 - dist / connectionDist;
-            const idx = lineCount * 6;
-            linePositions[idx] = nodes[i].mesh.position.x;
-            linePositions[idx + 1] = nodes[i].mesh.position.y;
-            linePositions[idx + 2] = nodes[i].mesh.position.z;
-            linePositions[idx + 3] = nodes[j].mesh.position.x;
-            linePositions[idx + 4] = nodes[j].mesh.position.y;
-            linePositions[idx + 5] = nodes[j].mesh.position.z;
+      // Stars parallax
+      stars.position.x = mouseX * -2.5;
+      stars.position.y = mouseY * 2;
 
-            const blendCol = pc.clone().lerp(ac, alpha);
-            lineColors[idx] = blendCol.r;
-            lineColors[idx + 1] = blendCol.g;
-            lineColors[idx + 2] = blendCol.b;
-            lineColors[idx + 3] = blendCol.r;
-            lineColors[idx + 4] = blendCol.g;
-            lineColors[idx + 5] = blendCol.b;
-            lineCount++;
-          }
+      // Ground radar ping expansion on click
+      if (pingActive) {
+        pingScale += delta * 4;
+        pingOpacity -= delta * 1.2;
+        pingMesh.scale.setScalar(pingScale);
+        pingMat.opacity = Math.max(0, pingOpacity);
+        if (pingOpacity <= 0) {
+          pingActive = false;
         }
       }
-      lineGeo.setDrawRange(0, lineCount * 2);
-      lineGeo.attributes.position.needsUpdate = true;
-      lineGeo.attributes.color.needsUpdate = true;
-
-      // Spawn pulses
-      pulseSpawnTimer += delta;
-      if (pulseSpawnTimer > 0.15 && pulses.length < pulseCount) {
-        pulseSpawnTimer = 0;
-        // pick random connection-worthy pair
-        const i = Math.floor(Math.random() * nodeCount);
-        let closestJ = -1;
-        let closestDist = connectionDist;
-        for (let j = 0; j < nodeCount; j++) {
-          if (j === i) continue;
-          const d = nodes[i].mesh.position.distanceTo(nodes[j].mesh.position);
-          if (d < closestDist) {
-            closestDist = d;
-            closestJ = j;
-          }
-        }
-        if (closestJ >= 0) {
-          pulses.push({
-            from: nodes[i].mesh.position.clone(),
-            to: nodes[closestJ].mesh.position.clone(),
-            t: 0,
-            speed: 1.5 + Math.random(),
-            idx: activePulseIdx % pulseCount,
-          });
-          activePulseIdx++;
-        }
-      }
-
-      // Animate pulses
-      for (let i = pulses.length - 1; i >= 0; i--) {
-        const p = pulses[i];
-        p.t += delta * p.speed;
-        if (p.t >= 1) {
-          pulsePos[p.idx * 3] = 0;
-          pulsePos[p.idx * 3 + 1] = 0;
-          pulsePos[p.idx * 3 + 2] = -1000;
-          pulses.splice(i, 1);
-        } else {
-          pulsePos[p.idx * 3] = p.from.x + (p.to.x - p.from.x) * p.t;
-          pulsePos[p.idx * 3 + 1] = p.from.y + (p.to.y - p.from.y) * p.t;
-          pulsePos[p.idx * 3 + 2] = p.from.z + (p.to.z - p.from.z) * p.t;
-        }
-      }
-      pulseGeo.attributes.position.needsUpdate = true;
     },
     onThemeChange(p, a) {
       const pc = new THREE.Color(p);
       const ac = new THREE.Color(a);
-      light1.color.copy(pc);
-      light2.color.copy(ac);
-      nodeMat.color.copy(pc);
-      pulseMat.color.copy(ac);
+      rimLight.color.copy(ac);
+      (atmoMat.uniforms.atmoColor.value as THREE.Color).copy(ac);
+      pingMat.color.copy(ac);
+      for (let i = 0; i < trajectories.length; i++) {
+        const mat = trajectories[i].lineMesh.material as THREE.LineBasicMaterial;
+        const bMat = trajectories[i].beaconMesh.material as THREE.MeshBasicMaterial;
+        const themeCol = i === 0 ? pc : ac;
+        mat.color.copy(themeCol);
+        bMat.color.copy(themeCol);
+      }
     },
     onClick(wx, wy) {
-      // Scatter nodes near click point
-      for (const nd of nodes) {
-        const dx = nd.mesh.position.x - wx;
-        const dy = nd.mesh.position.y - wy;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 8) {
-          const force = (1 - dist / 8) * 6;
-          nd.vel.x += (dx / (dist || 1)) * force;
-          nd.vel.y += (dy / (dist || 1)) * force;
-        }
-      }
+      // Trigger ground scan radar wave
+      pingActive = true;
+      pingScale = 0.2;
+      pingOpacity = 0.9;
+      pingMesh.position.set(wx * 0.3, wy * 0.3, earthRadius + 0.08);
+      pingMesh.lookAt(new THREE.Vector3(wx * 0.3, wy * 0.3, earthRadius * 2));
     },
   };
 }
@@ -1291,8 +1567,9 @@ function buildScene(
       return buildCosmicDrift(scene, primary, accent);
     case 'galaxy-spiral':
       return buildGalaxySpiral(scene, primary, accent);
+    case 'earth-globe':
     case 'neural-plexus':
-      return buildNeuralPlexus(scene, primary, accent);
+      return buildEarthGlobe(scene, primary, accent);
     case 'aurora-waves':
       return buildAuroraWaves(scene, primary, accent);
     case 'cyber-grid':

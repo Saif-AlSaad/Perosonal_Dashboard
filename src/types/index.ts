@@ -78,7 +78,7 @@ export interface ThemeConfig {
 
 export type BackgroundPreset = 'nebula' | 'cyber' | 'aurora' | 'deep-void' | 'obsidian' | 'iridescent' | 'custom';
 
-export type Scene3DPreset = 'cosmic-drift' | 'galaxy-spiral' | 'neural-plexus' | 'aurora-waves' | 'cyber-grid' | 'exoplanet';
+export type Scene3DPreset = 'cosmic-drift' | 'galaxy-spiral' | 'earth-globe' | 'neural-plexus' | 'aurora-waves' | 'cyber-grid' | 'exoplanet';
 
 export interface BackgroundConfig {
   preset: BackgroundPreset;
