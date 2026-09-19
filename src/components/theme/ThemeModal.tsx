@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Palette, 
@@ -6,13 +6,15 @@ import {
   Upload, 
   Sliders, 
   Check, 
-  X 
+  X,
+  Box 
 } from 'lucide-react';
 import { 
   ThemeConfig, 
   ThemePreset, 
   BackgroundConfig, 
-  BackgroundPreset 
+  BackgroundPreset,
+  Scene3DPreset 
 } from '../../types';
 import { THEME_PRESETS, applyTheme } from '../../services/theme';
 import { useToast } from '../common/ToastContext';
@@ -22,8 +24,10 @@ interface ThemeModalProps {
   onClose: () => void;
   currentTheme: ThemeConfig;
   currentBackground: BackgroundConfig;
+  currentScene3D: Scene3DPreset;
   onSaveTheme: (theme: ThemeConfig) => void;
   onSaveBackground: (bg: BackgroundConfig) => void;
+  onSaveScene: (preset: Scene3DPreset) => void;
 }
 
 export const ThemeModal: React.FC<ThemeModalProps> = ({
@@ -31,11 +35,13 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
   onClose,
   currentTheme,
   currentBackground,
+  currentScene3D,
   onSaveTheme,
   onSaveBackground,
+  onSaveScene,
 }) => {
   const { showToast } = useToast();
-  const [activeTab, setActiveTab] = useState<'themes' | 'background'>('themes');
+  const [activeTab, setActiveTab] = useState<'themes' | 'background' | '3d-scene'>('themes');
 
   // Theme state
   const [theme, setTheme] = useState<ThemeConfig>(currentTheme);
@@ -44,7 +50,17 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
   const [background, setBackground] = useState<BackgroundConfig>(currentBackground);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  if (!isOpen) return null;
+  // 3D Scene state
+  const [selectedScene, setSelectedScene] = useState<Scene3DPreset>(currentScene3D);
+
+  // Sync state with incoming props when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setTheme(currentTheme);
+      setBackground(currentBackground);
+      setSelectedScene(currentScene3D);
+    }
+  }, [isOpen, currentTheme, currentBackground, currentScene3D]);
 
   const presets: { id: ThemePreset; name: string; desc: string; colors: string[] }[] = [
     { id: 'midnight', name: 'Midnight', desc: 'Deep charcoal & neon indigo', colors: ['#6366f1', '#06b6d4', '#07090e'] },
@@ -93,6 +109,21 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
     showToast(`Background preset applied: ${presetId}`, 'success');
   };
 
+  const scenePresets: { id: Scene3DPreset; name: string; emoji: string; desc: string; gradientFrom: string; gradientTo: string }[] = [
+    { id: 'cosmic-drift', name: 'Cosmic Drift', emoji: '🌠', desc: 'Floating glass crystals & cosmic stardust with shockwave ripples', gradientFrom: '#6366f1', gradientTo: '#06b6d4' },
+    { id: 'galaxy-spiral', name: 'Galaxy Spiral', emoji: '🌌', desc: 'Logarithmic spiral arms with shooting stars & luminous core', gradientFrom: '#7c3aed', gradientTo: '#ec4899' },
+    { id: 'neural-plexus', name: 'Neural Plexus', emoji: '🧠', desc: 'Interconnected glowing nodes with synaptic pulses & mouse gravity', gradientFrom: '#14b8a6', gradientTo: '#6366f1' },
+    { id: 'aurora-waves', name: 'Aurora Waves', emoji: '🌊', desc: 'Flowing parametric silk ribbons with bioluminescent floating orbs', gradientFrom: '#06b6d4', gradientTo: '#a855f7' },
+    { id: 'cyber-grid', name: 'Cyber Grid', emoji: '⚡', desc: 'Infinite neon terrain with scrolling noise hills & wireframe sun', gradientFrom: '#f43f5e', gradientTo: '#f59e0b' },
+    { id: 'exoplanet', name: 'Exoplanet', emoji: '🪐', desc: 'Ringed glass planet with kinetic orbital gyroscope & moonlets', gradientFrom: '#8b5cf6', gradientTo: '#06b6d4' },
+  ];
+
+  const handleSceneSelect = (presetId: Scene3DPreset) => {
+    setSelectedScene(presetId);
+    onSaveScene(presetId);
+    showToast(`3D scene switched to ${presetId}`, 'success');
+  };
+
   const handleCustomBgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -122,6 +153,8 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
     setBackground(updated);
     onSaveBackground(updated);
   };
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
@@ -164,7 +197,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
             }`}
           >
             <Palette className="w-3.5 h-3.5" />
-            <span>Theme Palettes</span>
+            <span>Themes</span>
           </button>
           <button
             onClick={() => setActiveTab('background')}
@@ -175,7 +208,18 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
             }`}
           >
             <ImageIcon className="w-3.5 h-3.5" />
-            <span>Background & Controls</span>
+            <span>Background</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('3d-scene')}
+            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
+              activeTab === '3d-scene'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Box className="w-3.5 h-3.5" />
+            <span>3D Scene</span>
           </button>
         </div>
 
@@ -450,6 +494,89 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                       className="w-full accent-indigo-500"
                     />
                   </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === '3d-scene' && (
+            <>
+              {/* 3D Scene Presets */}
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                  3D Background Scene
+                </label>
+                <p className="text-[11px] text-slate-500 mb-4">
+                  Choose a stunning animated Three.js scene that renders behind your dashboard
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {scenePresets.map(sp => {
+                    const isSelected = selectedScene === sp.id;
+                    return (
+                      <div
+                        key={sp.id}
+                        onClick={() => handleSceneSelect(sp.id)}
+                        className={`group p-4 rounded-2xl glass-card cursor-pointer border transition-all overflow-hidden relative ${
+                          isSelected
+                            ? 'border-indigo-500 ring-2 ring-indigo-500/40 bg-indigo-500/10'
+                            : 'hover:border-white/20 hover:bg-white/5'
+                        }`}
+                      >
+                        {/* Animated gradient preview strip */}
+                        <div
+                          className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl opacity-60 group-hover:opacity-100 transition-opacity"
+                          style={{
+                            background: `linear-gradient(90deg, ${sp.gradientFrom}, ${sp.gradientTo}, ${sp.gradientFrom})`,
+                            backgroundSize: '200% 100%',
+                            animation: isSelected ? 'gradient-shift 3s ease infinite' : 'none',
+                          }}
+                        />
+
+                        <div className="flex items-start gap-3">
+                          <span className="text-2xl mt-0.5" role="img" aria-label={sp.name}>{sp.emoji}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <h4 className="text-sm font-bold text-white truncate">{sp.name}</h4>
+                              {isSelected && <Check className="w-3.5 h-3.5 text-indigo-400 shrink-0" />}
+                            </div>
+                            <p className="text-[10px] text-slate-400 mt-1 leading-snug">{sp.desc}</p>
+                          </div>
+                        </div>
+
+                        {/* Gradient dot preview */}
+                        <div className="flex items-center gap-1.5 mt-3 ml-9">
+                          <span
+                            className="w-3 h-3 rounded-full border border-white/20 shadow-sm"
+                            style={{ backgroundColor: sp.gradientFrom }}
+                          />
+                          <span
+                            className="w-3 h-3 rounded-full border border-white/20 shadow-sm"
+                            style={{
+                              background: `linear-gradient(135deg, ${sp.gradientFrom}, ${sp.gradientTo})`,
+                            }}
+                          />
+                          <span
+                            className="w-3 h-3 rounded-full border border-white/20 shadow-sm"
+                            style={{ backgroundColor: sp.gradientTo }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Info note */}
+              <div className="p-3 rounded-xl bg-white/5 border border-white/5 flex items-start gap-2">
+                <Box className="w-4 h-4 text-indigo-400 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-[11px] text-slate-300 leading-snug">
+                    3D scenes render using WebGL and respond to your mouse movement and clicks.
+                    Scenes automatically adapt to your selected color theme.
+                  </p>
+                  <p className="text-[10px] text-slate-500 mt-1">
+                    Disable 3D rendering in Settings → Performance if needed.
+                  </p>
                 </div>
               </div>
             </>

@@ -78,6 +78,8 @@ export interface ThemeConfig {
 
 export type BackgroundPreset = 'nebula' | 'cyber' | 'aurora' | 'deep-void' | 'obsidian' | 'iridescent' | 'custom';
 
+export type Scene3DPreset = 'cosmic-drift' | 'galaxy-spiral' | 'neural-plexus' | 'aurora-waves' | 'cyber-grid' | 'exoplanet';
+
 export interface BackgroundConfig {
   preset: BackgroundPreset;
   customImageUrl?: string;
@@ -95,6 +97,7 @@ export interface UserSettings {
   reducedMotion: boolean;
   theme: ThemeConfig;
   background: BackgroundConfig;
+  scene3DPreset: Scene3DPreset;
 }
 
 export interface DashboardStats {

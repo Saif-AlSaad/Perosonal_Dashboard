@@ -7,7 +7,8 @@ import {
   ActivityItem, 
   DashboardStats,
   ThemeConfig,
-  BackgroundConfig 
+  BackgroundConfig,
+  Scene3DPreset 
 } from './types';
 import { 
   initializeDatabase, 
@@ -284,6 +285,13 @@ const DashboardContent: React.FC = () => {
     setSettings(updatedSettings);
   };
 
+  const handleSaveScene = async (preset: Scene3DPreset) => {
+    if (!settings) return;
+    const updatedSettings = { ...settings, scene3DPreset: preset };
+    await saveSettings(updatedSettings);
+    setSettings(updatedSettings);
+  };
+
   const handleSaveSettings = async (newSettings: UserSettings) => {
     await saveSettings(newSettings);
     setSettings(newSettings);
@@ -316,7 +324,7 @@ const DashboardContent: React.FC = () => {
     <div className="relative min-h-screen w-full flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
       {/* Background and 3D Canvas Layers */}
       <BackgroundLayer config={settings.background} />
-      <ThreeScene enabled={settings.enable3D && !settings.reducedMotion} theme={settings.theme} />
+      <ThreeScene enabled={settings.enable3D && !settings.reducedMotion} theme={settings.theme} scenePreset={settings.scene3DPreset || 'cosmic-drift'} />
 
       {/* Main Top Header */}
       <Header
@@ -440,8 +448,10 @@ const DashboardContent: React.FC = () => {
         onClose={() => setIsThemeOpen(false)}
         currentTheme={settings.theme}
         currentBackground={settings.background}
+        currentScene3D={settings.scene3DPreset || 'cosmic-drift'}
         onSaveTheme={handleSaveTheme}
         onSaveBackground={handleSaveBackground}
+        onSaveScene={handleSaveScene}
       />
 
       {/* Settings Modal */}

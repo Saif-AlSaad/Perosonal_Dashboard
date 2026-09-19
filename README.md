@@ -102,10 +102,3 @@ Password : [demopass]
 *Saif Al Saad* <br>
 *Software Engineering* <br>
 *Daffodil International University* 
-=======
-### Author
-*Saif Al Saad* <br>
-*Software Engineering* <br>
-*Daffodil International University*
-
->>>>>>> 6b268c2d7b1926d62c4c465338c8d7091e9032d5

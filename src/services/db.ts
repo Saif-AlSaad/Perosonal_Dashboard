@@ -476,6 +476,7 @@ export async function initializeDatabase(): Promise<void> {
         overlayDarkness: 35,
         scale: 100,
       },
+      scene3DPreset: 'cosmic-drift',
     };
     await db.put('settings', defaultSettings, 'main');
   }
@@ -544,6 +545,7 @@ export async function getSettings(): Promise<UserSettings> {
       overlayDarkness: 35,
       scale: 100,
     },
+    scene3DPreset: 'cosmic-drift',
   };
   return defaultSettings;
 }
@@ -747,6 +749,7 @@ export async function resetDatabaseToSeed(): Promise<void> {
       overlayDarkness: 35,
       scale: 100,
     },
+    scene3DPreset: 'cosmic-drift',
   };
 
   const tx = db.transaction(['profile', 'settings', 'sections', 'entries', 'activity'], 'readwrite');

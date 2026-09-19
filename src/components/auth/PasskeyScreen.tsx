@@ -58,7 +58,7 @@ export const PasskeyScreen: React.FC<PasskeyScreenProps> = ({ profile, settings,
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center p-4 overflow-hidden bg-[#07090e]">
       {/* 3D Cosmos Background */}
-      <ThreeScene enabled={settings.enable3D} theme={settings.theme} />
+      <ThreeScene enabled={settings.enable3D} theme={settings.theme} scenePreset={settings.scene3DPreset || 'cosmic-drift'} />
 
       {/* Ambient background glow orbs */}
       <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />
