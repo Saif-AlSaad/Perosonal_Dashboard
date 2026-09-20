@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
                 </h1>
                 <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 dark:bg-indigo-500/15 border border-indigo-200 dark:border-indigo-500/30 text-indigo-700 dark:text-indigo-300">
                   <Sparkles className="w-2.5 h-2.5" />
-                  Life OS
+                  MyWorld
                 </span>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-sans">
@@ -91,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={handleInstallAction}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-500/20 hover:bg-indigo-100 dark:hover:bg-indigo-500/30 border border-indigo-200 dark:border-indigo-500/40 text-indigo-700 dark:text-indigo-200 hover:text-indigo-900 dark:hover:text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
-                title="Install Life OS to your desktop or phone home screen"
+                title="Install MyWorld to your desktop or phone home screen"
                 aria-label="Install App"
               >
                 <Download className="w-3.5 h-3.5 text-indigo-600 dark:text-cyan-300" />

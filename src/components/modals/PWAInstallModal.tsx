@@ -74,7 +74,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                 </div>
                 <div className="min-w-0">
                   <h2 className="text-lg font-bold font-display text-slate-900 dark:text-white flex items-center gap-2">
-                    <span>Install 3D Life OS</span>
+                    <span>Install MyWorld</span>
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/15 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border border-indigo-500/30">
                       App Mode
                     </span>
@@ -184,7 +184,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                           Alternative: Browser Menu
                         </p>
                         <p className="text-slate-500 dark:text-slate-400 mt-0.5">
-                          Click the <strong>three dots menu (⋮)</strong> in Chrome/Edge &gt; <strong>Save and share</strong> (or Apps) &gt; <strong>Install 3D Life OS</strong>.
+                          Click the <strong>three dots menu (⋮)</strong> in Chrome/Edge &gt; <strong>Save and share</strong> (or Apps) &gt; <strong>Install MyWorld</strong>.
                         </p>
                       </div>
                     </div>
@@ -258,7 +258,7 @@ export const PWAInstallModal: React.FC<PWAInstallModalProps> = ({
                           Scroll down and tap &quot;Add to Home Screen&quot;
                         </p>
                         <p className="text-slate-500 dark:text-slate-400 mt-0.5">
-                          Confirm by tapping <strong>Add</strong> at the top right. 3D Life OS will launch in native standalone mode with no Safari toolbars!
+                          Confirm by tapping <strong>Add</strong> at the top right. MyWorld will launch in native standalone mode with no Safari toolbars!
                         </p>
                       </div>
                     </div>

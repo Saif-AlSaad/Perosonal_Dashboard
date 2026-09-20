@@ -162,7 +162,7 @@ export const PasskeyScreen: React.FC<PasskeyScreenProps> = ({ profile, settings,
 
         {/* Card Footer */}
         <div className="mt-6 pt-4 border-t border-white/5 w-full flex items-center justify-center text-xs text-slate-500">
-          <span>Private Life OS • Client Encrypted</span>
+          <span>Private MyWorld • Client Encrypted</span>
         </div>
       </motion.div>
     </div>

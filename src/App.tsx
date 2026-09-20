@@ -312,7 +312,7 @@ const DashboardContent: React.FC = () => {
       <div className="min-h-screen w-full flex items-center justify-center bg-[#07090e] text-white">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs font-mono text-slate-400">Booting Life OS...</p>
+          <p className="text-xs font-mono text-slate-400">Booting MyWorld...</p>
         </div>
       </div>
     );

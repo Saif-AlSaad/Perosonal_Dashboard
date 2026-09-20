@@ -37,7 +37,7 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
       const saved = localStorage.getItem('life_os_scratchpad_todos');
       return saved ? JSON.parse(saved) : [
         { id: '1', text: 'Reflect on this week’s achievements', completed: true },
-        { id: '2', text: 'Capture new ideas & memories in Life OS', completed: false },
+        { id: '2', text: 'Capture new ideas & memories in MyWorld', completed: false },
         { id: '3', text: 'Explore 3D section realms & themes', completed: false },
       ];
     } catch {
