@@ -31,31 +31,31 @@ export const FavoritesView: React.FC<FavoritesViewProps> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="p-2.5 rounded-xl glass-pill text-slate-300 hover:text-white transition-colors"
+            className="p-2.5 rounded-xl bg-white dark:glass-pill border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer shadow-xs"
             title="Back to Dashboard"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
             <div className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
-              <h2 className="text-xl sm:text-2xl font-bold font-display text-white tracking-tight">
+              <Star className="w-5 h-5 text-amber-500 fill-amber-500 dark:text-amber-400 dark:fill-amber-400" />
+              <h2 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white tracking-tight">
                 Favorite Memories & Highlights
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-slate-400 mt-0.5">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
               Curated collection of your most cherished entries across all dimensions.
             </p>
           </div>
         </div>
 
-        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/25">
+        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-500/25">
           {favoriteEntries.length} Starred
         </span>
       </div>
 
       {favoriteEntries.length === 0 ? (
-        <div className="p-12 rounded-3xl glass-card text-center flex flex-col items-center justify-center">
+        <div className="p-12 rounded-3xl glass-card border border-slate-200 dark:border-white/10 text-center flex flex-col items-center justify-center">
           <Star className="w-12 h-12 text-slate-600 mb-3" />
           <h3 className="text-base font-bold text-slate-300">No favorite entries yet</h3>
           <p className="text-xs text-slate-500 mt-1 max-w-sm">

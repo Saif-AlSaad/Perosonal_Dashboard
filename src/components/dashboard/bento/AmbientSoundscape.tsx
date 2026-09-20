@@ -284,7 +284,7 @@ export const AmbientSoundscape: React.FC = () => {
   const currentPresetConfig = PRESETS.find(p => p.id === activePreset) || PRESETS[0];
 
   return (
-    <div className="relative rounded-3xl glass-card p-6 overflow-hidden flex flex-col justify-between group border border-white/10 shadow-2xl min-h-[260px]">
+    <div className="relative rounded-3xl glass-card p-6 overflow-hidden flex flex-col justify-between group border border-slate-200 dark:border-white/10 shadow-2xl min-h-[260px]">
       {/* Ambient background glow */}
       <div
         className="absolute -top-12 -left-12 w-40 h-40 rounded-full blur-3xl pointer-events-none transition-all duration-700 opacity-25 group-hover:opacity-50"
@@ -305,17 +305,17 @@ export const AmbientSoundscape: React.FC = () => {
             <Radio className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="text-sm font-bold font-display text-white tracking-tight">
+            <h4 className="text-sm font-bold font-display text-slate-900 dark:text-white tracking-tight">
               Soundscape Engine
             </h4>
-            <p className="text-[11px] text-slate-400 font-sans">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-sans">
               Synthesized Bio-Ambient Audio
             </p>
           </div>
         </div>
 
         {/* Equalizer frequency bars animation */}
-        <div className="flex items-end gap-0.5 h-5 px-2 py-1 rounded-lg bg-white/5 border border-white/5">
+        <div className="flex items-end gap-0.5 h-5 px-2 py-1 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5">
           {[0.6, 1.0, 0.4, 0.8, 0.5, 0.9, 0.3].map((heightRatio, i) => (
             <span
               key={i}
@@ -341,15 +341,15 @@ export const AmbientSoundscape: React.FC = () => {
               onClick={() => handleSelectPreset(preset.id)}
               className={`p-2.5 rounded-2xl border text-left transition-all flex items-center gap-2.5 cursor-pointer ${
                 isActive
-                  ? 'bg-white/10 border-white/25 text-white shadow-lg'
-                  : 'bg-white/5 border-white/5 text-slate-400 hover:text-slate-200 hover:bg-white/8'
+                  ? 'bg-indigo-50/90 dark:bg-white/10 border-indigo-300 dark:border-white/25 text-indigo-950 dark:text-white shadow-xs'
+                  : 'bg-slate-50 dark:bg-white/5 border-slate-200/90 dark:border-white/5 text-slate-700 dark:text-slate-400 hover:bg-slate-100 hover:text-slate-900 dark:hover:text-slate-200 dark:hover:bg-white/8'
               }`}
             >
               <div
                 className="p-1.5 rounded-xl transition-colors"
                 style={{
-                  backgroundColor: isActive ? `${preset.color}30` : 'rgba(255, 255, 255, 0.05)',
-                  color: isActive ? preset.color : '#94a3b8',
+                  backgroundColor: isActive ? `${preset.color}30` : 'rgba(15, 23, 42, 0.05)',
+                  color: isActive ? preset.color : '#64748b',
                 }}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -358,7 +358,7 @@ export const AmbientSoundscape: React.FC = () => {
                 <div className="text-xs font-semibold truncate leading-tight">
                   {preset.label}
                 </div>
-                <div className="text-[10px] text-slate-400 truncate mt-0.5">
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
                   {preset.badge}
                 </div>
               </div>
@@ -368,14 +368,18 @@ export const AmbientSoundscape: React.FC = () => {
       </div>
 
       {/* Bottom Controls: Play/Pause Button + Volume Slider */}
-      <div className="relative z-10 pt-3 border-t border-white/5 flex items-center justify-between gap-3">
+      <div className="relative z-10 pt-3 border-t border-slate-200 dark:border-white/5 flex items-center justify-between gap-3">
         <button
           onClick={togglePlay}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white transition-all shadow-lg hover:scale-102 active:scale-98 cursor-pointer"
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md hover:scale-102 active:scale-98 cursor-pointer ${
+            isPlaying
+              ? 'text-white'
+              : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 dark:bg-white/10 dark:text-white dark:border-white/10'
+          }`}
           style={{
             background: isPlaying
               ? `linear-gradient(135deg, ${currentPresetConfig.color} 0%, #4f46e5 100%)`
-              : 'rgba(255, 255, 255, 0.1)',
+              : undefined,
             boxShadow: isPlaying ? `0 4px 20px -2px ${currentPresetConfig.color}60` : 'none',
           }}
         >
@@ -396,13 +400,13 @@ export const AmbientSoundscape: React.FC = () => {
         <div className="flex items-center gap-2 flex-1 max-w-[140px]">
           <button
             onClick={toggleMute}
-            className="text-slate-400 hover:text-white transition-colors cursor-pointer"
+            className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors cursor-pointer"
             title={isMuted ? 'Unmute' : 'Mute'}
           >
             {isMuted || volume === 0 ? (
-              <VolumeX className="w-3.5 h-3.5 text-rose-400" />
+              <VolumeX className="w-3.5 h-3.5 text-rose-500 dark:text-rose-400" />
             ) : (
-              <Volume2 className="w-3.5 h-3.5 text-slate-300" />
+              <Volume2 className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
             )}
           </button>
           <input
@@ -412,7 +416,7 @@ export const AmbientSoundscape: React.FC = () => {
             step={0.01}
             value={isMuted ? 0 : volume}
             onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
-            className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer accent-indigo-400"
+            className="w-full h-1 bg-slate-200 dark:bg-white/20 rounded-lg appearance-none cursor-pointer accent-indigo-600 dark:accent-indigo-400"
             title={`Volume: ${Math.round(volume * 100)}%`}
           />
         </div>

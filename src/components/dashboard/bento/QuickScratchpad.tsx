@@ -151,34 +151,34 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
   const completedTodos = todos.filter(t => t.completed).length;
 
   return (
-    <div className="relative rounded-3xl glass-card p-6 overflow-hidden flex flex-col justify-between group border border-white/10 shadow-2xl min-h-[280px]">
+    <div className="relative rounded-3xl glass-card p-6 overflow-hidden flex flex-col justify-between group border border-slate-200 dark:border-white/10 shadow-2xl min-h-[280px]">
       {/* Ambient gradient */}
       <div className="absolute top-0 right-0 w-44 h-44 bg-amber-500/10 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
 
       {/* Top Bar: Tabs & Quick Action buttons */}
-      <div className="relative z-10 flex items-center justify-between gap-3 pb-3 border-b border-white/5">
+      <div className="relative z-10 flex items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-white/5">
         {/* Tab switch */}
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-white/5 border border-white/5">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5">
           <button
             onClick={() => setActiveTab('notes')}
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'notes'
-                ? 'bg-white/15 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-white dark:bg-white/15 text-slate-900 dark:text-white shadow-sm font-semibold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
-            <StickyNote className="w-3.5 h-3.5 text-amber-400" />
+            <StickyNote className="w-3.5 h-3.5 text-amber-500" />
             <span>Scratchpad</span>
           </button>
           <button
             onClick={() => setActiveTab('checklist')}
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
               activeTab === 'checklist'
-                ? 'bg-white/15 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-white dark:bg-white/15 text-slate-900 dark:text-white shadow-sm font-semibold'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
-            <CheckSquare className="w-3.5 h-3.5 text-emerald-400" />
+            <CheckSquare className="w-3.5 h-3.5 text-emerald-500" />
             <span>Checklist ({completedTodos}/{todos.length})</span>
           </button>
         </div>
@@ -187,14 +187,14 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
         <div className="flex items-center gap-1">
           <button
             onClick={handleCopy}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
             title="Copy content"
           >
             <Copy className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={handleClear}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
             title="Clear content"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -213,7 +213,7 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
                 setSaveStatus('saving');
               }}
               placeholder="Jot down a sudden thought, inspiration, quote, or snippet... (Auto-saves locally)"
-              className="w-full flex-1 min-h-[130px] p-3 rounded-2xl bg-white/[0.03] border border-white/5 focus:border-indigo-500/40 focus:bg-white/[0.06] text-xs sm:text-sm text-slate-100 placeholder:text-slate-500 font-sans resize-none focus:outline-none transition-all leading-relaxed"
+              className="w-full flex-1 min-h-[130px] p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 focus:border-indigo-500/40 focus:bg-white dark:focus:bg-white/[0.06] text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 font-sans resize-none focus:outline-none transition-all leading-relaxed"
             />
           </div>
         ) : (
@@ -225,7 +225,7 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
                 value={newTodoInput}
                 onChange={(e) => setNewTodoInput(e.target.value)}
                 placeholder="Add a milestone or priority..."
-                className="flex-1 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/5 focus:border-indigo-500/40 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none"
+                className="flex-1 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/5 focus:border-indigo-500/40 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none"
               />
               <button
                 type="submit"
@@ -238,14 +238,14 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
             {/* Todo items list */}
             <div className="space-y-1.5 max-h-[130px] overflow-y-auto pr-1">
               {todos.length === 0 ? (
-                <div className="text-center py-6 text-xs text-slate-500">
+                <div className="text-center py-6 text-xs text-slate-400 dark:text-slate-500">
                   No tasks pending. You're all clear!
                 </div>
               ) : (
                 todos.map((todo) => (
                   <div
                     key={todo.id}
-                    className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 group/todo transition-colors"
+                    className="flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-xl bg-slate-50/70 hover:bg-slate-100 dark:bg-white/[0.02] dark:hover:bg-white/[0.05] border border-slate-200 dark:border-white/5 group/todo transition-colors"
                   >
                     <button
                       onClick={() => toggleTodo(todo.id)}
@@ -255,14 +255,14 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
                         className={`w-4 h-4 rounded-md border flex items-center justify-center transition-colors shrink-0 ${
                           todo.completed
                             ? 'bg-emerald-500 border-emerald-500 text-white'
-                            : 'border-white/20 hover:border-white/40'
+                            : 'border-slate-300 dark:border-white/20 hover:border-slate-400 dark:hover:border-white/40'
                         }`}
                       >
                         {todo.completed && <Check className="w-3 h-3" />}
                       </div>
                       <span
                         className={`text-xs truncate ${
-                          todo.completed ? 'line-through text-slate-500' : 'text-slate-200'
+                          todo.completed ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-200'
                         }`}
                       >
                         {todo.text}
@@ -270,7 +270,7 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
                     </button>
                     <button
                       onClick={() => deleteTodo(todo.id)}
-                      className="opacity-0 group-hover/todo:opacity-100 text-slate-500 hover:text-rose-400 p-1 transition-opacity cursor-pointer"
+                      className="opacity-0 group-hover/todo:opacity-100 text-slate-400 hover:text-rose-500 p-1 transition-opacity cursor-pointer"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -283,8 +283,8 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
       </div>
 
       {/* Bottom Bar: Stats & Convert to Entry Action */}
-      <div className="relative z-10 pt-3 border-t border-white/5 flex items-center justify-between gap-3 text-[11px]">
-        <div className="flex items-center gap-2 text-slate-400">
+      <div className="relative z-10 pt-3 border-t border-slate-200 dark:border-white/5 flex items-center justify-between gap-3 text-[11px]">
+        <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
           <span className="flex items-center gap-1">
             <span className={`w-1.5 h-1.5 rounded-full ${saveStatus === 'saved' ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'}`} />
             <span>{saveStatus === 'saved' ? 'Saved' : 'Saving...'}</span>
@@ -300,7 +300,7 @@ export const QuickScratchpad: React.FC<QuickScratchpadProps> = ({ onConvertToEnt
         {onConvertToEntry && (
           <button
             onClick={handleConvert}
-            className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300 font-semibold transition-colors cursor-pointer group/btn"
+            className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-semibold transition-colors cursor-pointer group/btn"
           >
             <FileEdit className="w-3 h-3" />
             <span>Save as Vault Entry</span>

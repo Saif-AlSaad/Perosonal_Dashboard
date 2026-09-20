@@ -47,7 +47,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="mb-3 p-2 rounded-2xl glass-panel border border-white/10 shadow-2xl flex flex-col gap-1.5 backdrop-blur-xl min-w-[170px]"
+            className="mb-3 p-2 rounded-2xl bg-white dark:glass-panel border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col gap-1.5 backdrop-blur-xl min-w-[170px]"
           >
             {actions.map((act, index) => {
               const Icon = act.icon;
@@ -58,7 +58,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
                     setIsOpen(false);
                     act.action();
                   }}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-white/10 text-slate-200 hover:text-white transition-all text-xs font-medium text-left group"
+                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white transition-all text-xs font-semibold text-left group cursor-pointer"
                 >
                   <div className={`p-1.5 rounded-lg text-white ${act.color} transition-transform group-hover:scale-110 shadow-md`}>
                     <Icon className="w-3.5 h-3.5" />

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   :root {
     --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -216,4 +218,353 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+/* =========================================================
+   PROFESSIONAL LIGHT THEME SYSTEM (Minimal White & Light Modes)
+   ========================================================= */
+
+html.light,
+.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+/* Background Canvas: clean, bright, subtle ambient illumination */
+html.light .theme-bg-surface {
+  background: 
+    radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(168, 85, 247, 0.03) 0%, transparent 50%),
+    #f8fafc !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+html.light .theme-readability-overlay {
+  display: none !important;
+}
+
+/* Top Navigation Header */
+html.light header {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Header Buttons */
+html.light header button[aria-label="Search dashboard (Ctrl+K)"],
+html.light header button[aria-label="Customize theme"],
+html.light header button[aria-label="Open settings"] {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light header button[aria-label="Search dashboard (Ctrl+K)"]:hover,
+html.light header button[aria-label="Customize theme"]:hover,
+html.light header button[aria-label="Open settings"]:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light header kbd {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #64748b !important;
+}
+
+html.light header button[title="Lock Dashboard"] {
+  background: #fff1f2 !important;
+  border: 1px solid #fecdd3 !important;
+  color: #e11d48 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light header button[title="Lock Dashboard"]:hover {
+  background: #ffe4e6 !important;
+  color: #be123c !important;
+}
+
+html.light #android-download-apk-btn,
+html.light header button[aria-label="Install App"] {
+  background: #eef2ff !important;
+  border: 1px solid #c7d2fe !important;
+  color: #4338ca !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light header button[aria-label="Install App"]:hover {
+  background: #e0e7ff !important;
+  color: #3730a3 !important;
+}
+
+/* Glass Panels & Cards in Light Mode */
+html.light .glass-panel {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03) !important;
+}
+
+html.light .glass-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light .glass-card:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.04) !important;
+}
+
+/* Pills, Badges & Micro-elements in Light Mode */
+html.light .glass-pill {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #334155 !important;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light .glass-pill:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Secondary Buttons in Light Mode */
+html.light .glass-button-secondary {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.04) !important;
+}
+
+html.light .glass-button-secondary:hover {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #000000 !important;
+}
+
+/* Primary Action Buttons in Light Mode */
+html.light .glass-button-primary {
+  background: #4f46e5 !important;
+  border: 1px solid #4338ca !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px -1px rgba(79, 70, 229, 0.35) !important;
+}
+
+html.light .glass-button-primary:hover {
+  background: #4338ca !important;
+  color: #ffffff !important;
+}
+
+/* Form Inputs in Light Mode */
+html.light .glass-input {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html.light .glass-input:focus {
+  background: #ffffff !important;
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15) !important;
+}
+
+/* Typography Hierarchy in Light Mode */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light h5,
+html.light h6,
+html.light .font-display {
+  color: #0f172a !important;
+}
+
+/* Ensure text-white converts to solid deep slate on light surfaces */
+html.light .text-white {
+  color: #0f172a !important;
+}
+
+/* Preserve crisp white text ONLY on filled colored action buttons & tags */
+html.light .glass-button-primary,
+html.light .glass-button-primary *,
+html.light button.bg-indigo-600,
+html.light button.bg-indigo-600 *,
+html.light .bg-indigo-600,
+html.light .bg-indigo-600 *,
+html.light .bg-indigo-500,
+html.light .bg-indigo-500 *,
+html.light .bg-rose-600,
+html.light .bg-rose-600 *,
+html.light .bg-emerald-600,
+html.light .bg-emerald-600 *,
+html.light .bg-emerald-500,
+html.light .bg-emerald-500 * {
+  color: #ffffff !important;
+}
+
+/* Slate Scale for Light Mode */
+html.light .text-slate-100 {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-200 {
+  color: #1e293b !important;
+}
+
+html.light .text-slate-300 {
+  color: #334155 !important;
+}
+
+html.light .text-slate-400 {
+  color: #64748b !important;
+}
+
+html.light .text-slate-500 {
+  color: #64748b !important;
+}
+
+html.light .text-slate-600 {
+  color: #94a3b8 !important;
+}
+
+/* Accent Colors Tuned for High Contrast on Light Surfaces */
+html.light .text-indigo-400,
+html.light .text-indigo-300 {
+  color: #4f46e5 !important;
+}
+
+html.light .text-cyan-400,
+html.light .text-sky-400 {
+  color: #0284c7 !important;
+}
+
+html.light .text-emerald-300,
+html.light .text-emerald-400 {
+  color: #059669 !important;
+}
+
+html.light .text-rose-400,
+html.light .text-rose-300 {
+  color: #e11d48 !important;
+}
+
+html.light .text-amber-400 {
+  color: #d97706 !important;
+}
+
+html.light .text-purple-400 {
+  color: #7c3aed !important;
+}
+
+/* Remove fuzzy white drop-shadows in light mode */
+html.light .drop-shadow-md,
+html.light .drop-shadow-lg,
+html.light .drop-shadow {
+  filter: none !important;
+}
+
+/* Soft Icon Backgrounds & Subtle Chips */
+html.light .bg-white\/5,
+html.light .bg-white\/8,
+html.light .bg-white\/10 {
+  background-color: #f8fafc !important;
+}
+
+html.light .bg-white\/15,
+html.light .bg-white\/20 {
+  background-color: #f1f5f9 !important;
+}
+
+/* Soft Neutral Borders */
+html.light .border-white\/5,
+html.light .border-white\/10,
+html.light .border-white\/15,
+html.light .border-white\/20,
+html.light .border-white\/25,
+html.light .border-white\/30 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Hover States */
+html.light .hover\:bg-white\/5:hover,
+html.light .hover\:bg-white\/8:hover,
+html.light .hover\:bg-white\/10:hover {
+  background-color: #f1f5f9 !important;
+}
+
+html.light .hover\:bg-white\/15:hover {
+  background-color: #e2e8f0 !important;
+}
+
+html.light .hover\:text-white:hover,
+html.light .hover\:text-slate-200:hover {
+  color: #0f172a !important;
+}
+
+/* Group Hover States */
+html.light .group:hover .group-hover\:text-indigo-200,
+html.light .group:hover .group-hover\:text-indigo-300 {
+  color: #4f46e5 !important;
+}
+
+html.light .group:hover .group-hover\:text-amber-200 {
+  color: #d97706 !important;
+}
+
+html.light .group:hover .group-hover\:text-rose-200 {
+  color: #e11d48 !important;
+}
+
+html.light .group:hover .group-hover\:text-emerald-200 {
+  color: #059669 !important;
+}
+
+html.light .group:hover .group-hover\:text-white {
+  color: #0f172a !important;
+}
+
+/* Text Gradients */
+html.light .text-gradient-primary {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html.light .text-gradient-accent {
+  background: linear-gradient(135deg, #3730a3 0%, #4f46e5 50%, #0284c7 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Modals & Backdrop in Light Mode */
+html.light .bg-black\/80 {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+}
+
+html.light .bg-black\/60 {
+  background-color: rgba(15, 23, 42, 0.3) !important;
+}
+
+/* Light Mode Scrollbar */
+html.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }

@@ -166,35 +166,35 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({ entries, activ
   const getLevelClasses = (level: number) => {
     switch (level) {
       case 1:
-        return 'bg-indigo-500/35 border-indigo-500/50 hover:border-indigo-400';
+        return 'bg-indigo-100 dark:bg-indigo-500/35 border-indigo-200 dark:border-indigo-500/50 hover:border-indigo-400';
       case 2:
-        return 'bg-indigo-500/70 border-indigo-400/80 hover:border-indigo-300';
+        return 'bg-indigo-300 dark:bg-indigo-500/70 border-indigo-400 dark:border-indigo-400/80 hover:border-indigo-500';
       case 3:
-        return 'bg-cyan-500/85 border-cyan-400 hover:border-cyan-200';
+        return 'bg-indigo-500 dark:bg-cyan-500/85 border-indigo-600 dark:border-cyan-400 hover:border-indigo-700';
       case 4:
-        return 'bg-gradient-to-tr from-indigo-400 to-cyan-300 border-white shadow-sm hover:brightness-125';
+        return 'bg-indigo-700 dark:bg-gradient-to-tr dark:from-indigo-400 dark:to-cyan-300 border-indigo-800 dark:border-white shadow-xs hover:brightness-110';
       case 0:
       default:
-        return 'bg-white/[0.04] border-white/[0.04] hover:border-white/20';
+        return 'bg-slate-100 dark:bg-white/[0.04] border-slate-200 dark:border-white/[0.04] hover:border-slate-300 dark:hover:border-white/20';
     }
   };
 
   return (
-    <div className="relative rounded-3xl glass-card p-6 overflow-hidden flex flex-col justify-between group border border-white/10 shadow-2xl min-h-[260px]">
+    <div className="relative rounded-3xl glass-card p-6 overflow-hidden flex flex-col justify-between group border border-slate-200 dark:border-white/10 shadow-2xl min-h-[260px]">
       {/* Ambient background glow */}
       <div className="absolute top-0 right-1/4 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Header: Title & Streak Highlights */}
-      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/5">
+      <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-white/5">
         <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-xl bg-indigo-500/15 border border-indigo-500/30 text-indigo-400">
+          <div className="p-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400">
             <Calendar className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="text-sm font-bold font-display text-white tracking-tight">
+            <h4 className="text-sm font-bold font-display text-slate-900 dark:text-white tracking-tight">
               Life Consistency & Milestones
             </h4>
-            <p className="text-[11px] text-slate-400 font-sans">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-sans">
               20-Week Activity & Memory Heatmap
             </p>
           </div>
@@ -202,13 +202,13 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({ entries, activ
 
         {/* Streak & Metrics Badges */}
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs font-semibold">
-            <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs font-semibold shadow-xs">
+            <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500 dark:fill-amber-400 dark:text-amber-400" />
             <span>{stats.currentStreak} Day Streak</span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/5 border border-white/5 text-slate-300 text-xs">
-            <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 text-slate-700 dark:text-slate-300 text-xs font-medium">
+            <TrendingUp className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
             <span>{stats.totalContributions} Contributions</span>
           </div>
         </div>
@@ -235,37 +235,37 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({ entries, activ
       </div>
 
       {/* Bottom Bar: Hover Tooltip & Legend */}
-      <div className="relative z-10 pt-3 border-t border-white/5 flex items-center justify-between gap-3 text-xs">
+      <div className="relative z-10 pt-3 border-t border-slate-200 dark:border-white/5 flex items-center justify-between gap-3 text-xs">
         {/* Dynamic Hover Details */}
-        <div className="flex items-center gap-1.5 text-slate-300 min-h-[18px]">
+        <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 min-h-[18px]">
           {hoveredDay ? (
             <span className="text-[11px]">
-              <strong className="text-white font-semibold">
+              <strong className="text-slate-900 dark:text-white font-semibold">
                 {hoveredDay.count} {hoveredDay.count === 1 ? 'event' : 'events'}
               </strong>{' '}
               on {hoveredDay.displayDate}
               {hoveredDay.count > 0 && (
-                <span className="text-slate-400 text-[10px] ml-1">
+                <span className="text-slate-500 dark:text-slate-400 text-[10px] ml-1">
                   ({hoveredDay.entriesCount} entries, {hoveredDay.activitiesCount} edits)
                 </span>
               )}
             </span>
           ) : (
-            <span className="text-[11px] text-slate-400 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-indigo-400 inline" />
+            <span className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-indigo-500 dark:text-indigo-400 inline" />
               Hover over a square to view daily vault interactions
             </span>
           )}
         </div>
 
         {/* Level Legend */}
-        <div className="flex items-center gap-1.5 text-[10px] text-slate-400 shrink-0">
+        <div className="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 shrink-0">
           <span>Less</span>
-          <span className="w-2.5 h-2.5 rounded-xs bg-white/[0.04] border border-white/[0.04]" />
-          <span className="w-2.5 h-2.5 rounded-xs bg-indigo-500/35 border border-indigo-500/50" />
-          <span className="w-2.5 h-2.5 rounded-xs bg-indigo-500/70 border border-indigo-400/80" />
-          <span className="w-2.5 h-2.5 rounded-xs bg-cyan-500/85 border border-cyan-400" />
-          <span className="w-2.5 h-2.5 rounded-xs bg-gradient-to-tr from-indigo-400 to-cyan-300 border border-white" />
+          <span className="w-2.5 h-2.5 rounded-xs bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.04]" />
+          <span className="w-2.5 h-2.5 rounded-xs bg-indigo-100 dark:bg-indigo-500/35 border border-indigo-200 dark:border-indigo-500/50" />
+          <span className="w-2.5 h-2.5 rounded-xs bg-indigo-300 dark:bg-indigo-500/70 border border-indigo-400 dark:border-indigo-400/80" />
+          <span className="w-2.5 h-2.5 rounded-xs bg-indigo-500 dark:bg-cyan-500/85 border border-indigo-600 dark:border-cyan-400" />
+          <span className="w-2.5 h-2.5 rounded-xs bg-indigo-700 dark:bg-gradient-to-tr dark:from-indigo-400 dark:to-cyan-300 border border-indigo-800 dark:border-white" />
           <span>More</span>
         </div>
       </div>

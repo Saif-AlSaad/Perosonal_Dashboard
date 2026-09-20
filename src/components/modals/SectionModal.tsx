@@ -64,14 +64,14 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 dark:bg-black/80 backdrop-blur-md overflow-y-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="w-full max-w-md rounded-3xl glass-panel border border-white/10 shadow-2xl p-6 sm:p-8 relative my-auto"
+        className="w-full max-w-md rounded-3xl bg-white dark:glass-panel border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8 relative my-auto"
       >
-        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-5">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 mb-5">
           <div className="flex items-center gap-2.5">
             <div
               className="p-2 rounded-xl flex items-center justify-center border"
@@ -80,16 +80,16 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
               {sectionToEdit ? <Edit className="w-4 h-4" /> : <FolderPlus className="w-4 h-4" />}
             </div>
             <div>
-              <h2 className="text-lg font-bold font-display text-white">
+              <h2 className="text-lg font-bold font-display text-slate-900 dark:text-white">
                 {sectionToEdit ? 'Edit Section Realm' : 'Add New Realm'}
               </h2>
-              <p className="text-xs text-slate-400">Create a new notebook dimension</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Create a new notebook dimension</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -98,7 +98,7 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Section Name */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
               Realm Name *
             </label>
             <input
@@ -106,14 +106,14 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g. Books, Fitness, Bucket List, Certifications..."
-              className="w-full px-3.5 py-2.5 rounded-xl glass-input text-white text-sm"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:glass-input border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500"
               autoFocus
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
               Short Description
             </label>
             <input
@@ -121,25 +121,25 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="What this section represents..."
-              className="w-full px-3.5 py-2.5 rounded-xl glass-input text-white text-sm"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:glass-input border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           {/* Icon Picker */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
               Select Realm Icon
             </label>
-            <div className="grid grid-cols-7 gap-2 p-2 rounded-xl bg-white/5 border border-white/5 max-h-32 overflow-y-auto">
+            <div className="grid grid-cols-7 gap-2 p-2 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 max-h-32 overflow-y-auto">
               {AVAILABLE_ICONS.map(iconName => (
                 <button
                   key={iconName}
                   type="button"
                   onClick={() => setIcon(iconName)}
-                  className={`p-2 rounded-lg flex items-center justify-center transition-all ${
+                  className={`p-2 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
                     icon === iconName
                       ? 'bg-indigo-600 text-white shadow-md ring-2 ring-indigo-400'
-                      : 'text-slate-400 hover:text-white hover:bg-white/10'
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/10'
                   }`}
                   title={iconName}
                 >
@@ -178,17 +178,17 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
 
           {/* Preferred Layout */}
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
               Default Layout Mode
             </label>
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => setLayout('grid')}
-                className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-1.5 ${
+                className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
                   layout === 'grid'
-                    ? 'bg-indigo-600 border-indigo-500 text-white'
-                    : 'glass-button-secondary text-slate-300'
+                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs'
+                    : 'bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300'
                 }`}
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
@@ -198,10 +198,10 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
               <button
                 type="button"
                 onClick={() => setLayout('timeline')}
-                className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-1.5 ${
+                className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
                   layout === 'timeline'
-                    ? 'bg-indigo-600 border-indigo-500 text-white'
-                    : 'glass-button-secondary text-slate-300'
+                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs'
+                    : 'bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300'
                 }`}
               >
                 <GitCommitVertical className="w-3.5 h-3.5" />
@@ -211,10 +211,10 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
               <button
                 type="button"
                 onClick={() => setLayout('notebook')}
-                className={`py-2 px-3 rounded-xl border text-xs font-medium flex items-center justify-center gap-1.5 ${
+                className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
                   layout === 'notebook'
-                    ? 'bg-indigo-600 border-indigo-500 text-white'
-                    : 'glass-button-secondary text-slate-300'
+                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs'
+                    : 'bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300'
                 }`}
               >
                 <BookOpen className="w-3.5 h-3.5" />
@@ -224,17 +224,17 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-white/10">
+          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-200 dark:border-white/10">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl glass-button-secondary text-xs"
+              className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 text-xs font-semibold cursor-pointer transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl glass-button-primary text-xs font-bold flex items-center gap-1.5"
+              className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-colors"
             >
               <Check className="w-4 h-4" />
               <span>{sectionToEdit ? 'Save Changes' : 'Create Section'}</span>

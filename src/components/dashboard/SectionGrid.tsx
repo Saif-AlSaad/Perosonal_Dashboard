@@ -71,15 +71,15 @@ export const SectionGrid: React.FC<SectionGridProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-xl sm:text-2xl font-bold font-display text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-bold font-display text-slate-900 dark:text-white tracking-tight">
               Life OS Dimensions
             </h2>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/20">
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20">
               {sections.length} Realms
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 font-sans">
-            Floating 3D personal notebooks. Drag cards to reorder your universe.
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-sans">
+            Personal life notebooks and dimensions. Drag cards to reorder your workspace.
           </p>
         </div>
 
@@ -92,7 +92,7 @@ export const SectionGrid: React.FC<SectionGridProps> = ({
         </button>
       </div>
 
-      {/* Grid of 3D Cards */}
+      {/* Grid of Section Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {sections.map(section => (
           <SectionCard
@@ -111,15 +111,15 @@ export const SectionGrid: React.FC<SectionGridProps> = ({
         {/* Add Section Action Card */}
         <button
           onClick={onOpenAddModal}
-          className="group relative min-h-[220px] rounded-3xl border-2 border-dashed border-white/10 hover:border-indigo-500/50 hover:bg-indigo-500/5 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center cursor-pointer"
+          className="group relative min-h-[220px] rounded-3xl border-2 border-dashed border-slate-300 dark:border-white/10 hover:border-indigo-500/50 hover:bg-indigo-50/50 dark:hover:bg-indigo-500/5 transition-all duration-300 p-6 flex flex-col items-center justify-center text-center cursor-pointer"
         >
-          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 group-hover:border-indigo-500/40 group-hover:bg-indigo-500/15 flex items-center justify-center text-slate-400 group-hover:text-indigo-300 mb-3 transition-all duration-300 group-hover:scale-110">
+          <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 group-hover:border-indigo-300 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/15 flex items-center justify-center text-slate-600 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 mb-3 transition-all duration-300 group-hover:scale-110">
             <Plus className="w-6 h-6" />
           </div>
-          <h3 className="text-base font-bold font-display text-slate-300 group-hover:text-white transition-colors">
+          <h3 className="text-base font-bold font-display text-slate-800 dark:text-slate-300 group-hover:text-indigo-600 dark:group-hover:text-white transition-colors">
             Create New Dimension
           </h3>
-          <p className="text-xs text-slate-500 group-hover:text-slate-400 mt-1 max-w-[180px] leading-relaxed">
+          <p className="text-xs text-slate-600 group-hover:text-slate-700 dark:text-slate-500 dark:group-hover:text-slate-400 mt-1 max-w-[180px] leading-relaxed">
             Books, Movies, Bucket List, Fitness, Certificates, and more
           </p>
         </button>

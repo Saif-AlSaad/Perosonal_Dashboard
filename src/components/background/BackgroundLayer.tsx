@@ -93,7 +93,7 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({ config }) => {
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       {/* Dynamic Background Surface */}
       <div
-        className="absolute inset-0 transition-all duration-700 ease-out"
+        className="absolute inset-0 transition-all duration-700 ease-out theme-bg-surface"
         style={{
           ...getPresetBackgroundStyle(),
           filter: `blur(${blur}px) brightness(${brightness}%)`,
@@ -104,7 +104,7 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({ config }) => {
 
       {/* Adaptive Readability Overlay */}
       <div
-        className="absolute inset-0 transition-opacity duration-300 pointer-events-none"
+        className="absolute inset-0 transition-opacity duration-300 pointer-events-none theme-readability-overlay"
         style={{
           backgroundColor: `rgba(0, 0, 0, ${overlayDarkness / 100})`,
         }}

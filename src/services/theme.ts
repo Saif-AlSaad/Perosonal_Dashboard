@@ -35,11 +35,11 @@ export const THEME_PRESETS: Record<ThemePreset, ThemeConfig> = {
     preset: 'minimal-white',
     primaryColor: '#4f46e5', // Deep Indigo
     accentColor: '#0284c7', // Slate Cyan
-    bgColor: '#f1f5f9',
-    cardBg: 'rgba(255, 255, 255, 0.82)',
-    cardBorder: 'rgba(0, 0, 0, 0.08)',
-    glassBlur: 20,
-    glassOpacity: 0.85,
+    bgColor: '#f8fafc',
+    cardBg: '#ffffff',
+    cardBorder: '#e2e8f0',
+    glassBlur: 16,
+    glassOpacity: 1,
   },
   forest: {
     preset: 'forest',
@@ -73,6 +73,20 @@ export const THEME_PRESETS: Record<ThemePreset, ThemeConfig> = {
   },
 };
 
+// Check if a background color is light based on perceived luminance
+export function isLightHex(hex: string): boolean {
+  if (!hex || !hex.startsWith('#')) return false;
+  let c = hex.replace('#', '');
+  if (c.length === 3) c = c.split('').map(x => x + x).join('');
+  const num = parseInt(c, 16);
+  if (isNaN(num)) return false;
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+  return luminance > 160;
+}
+
 // Convert hex to rgb string for CSS opacity calculations
 function hexToRgb(hex: string): string {
   let c = hex.replace('#', '');
@@ -100,14 +114,18 @@ export function applyTheme(theme: ThemeConfig): void {
   root.style.setProperty('--theme-glass-blur', `${theme.glassBlur}px`);
   root.style.setProperty('--theme-glass-opacity', `${theme.glassOpacity}`);
 
-  // Handle light theme text color inversion if Minimal White is selected
-  if (theme.preset === 'minimal-white') {
+  // Handle light theme text color inversion
+  const isLight = theme.preset === 'minimal-white' || isLightHex(theme.bgColor);
+
+  if (isLight) {
     root.classList.remove('dark');
     root.classList.add('light');
     document.body.style.color = '#0f172a';
+    document.body.style.backgroundColor = theme.bgColor;
   } else {
     root.classList.remove('light');
     root.classList.add('dark');
     document.body.style.color = '#e2e8f0';
+    document.body.style.backgroundColor = theme.bgColor;
   }
 }
