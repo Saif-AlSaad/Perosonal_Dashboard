@@ -124,7 +124,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
               type="button"
               onClick={onClose}
               disabled={isProcessing}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 transition-colors cursor-pointer"
+              className="px-4 py-2 rounded-xl glass-button-secondary text-xs font-semibold cursor-pointer transition-colors"
             >
               Cancel
             </button>

@@ -108,7 +108,7 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
               value={name}
               onChange={e => setName(e.target.value)}
               placeholder="e.g. Books, Fitness, Bucket List, Certifications..."
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:glass-input border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500"
+              className="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
               autoFocus
             />
           </div>
@@ -123,7 +123,7 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="What this section represents..."
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:glass-input border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-indigo-500"
+              className="w-full px-3.5 py-2.5 rounded-xl glass-input text-sm focus:outline-none placeholder:text-slate-400 dark:placeholder:text-slate-500"
             />
           </div>
 
@@ -132,22 +132,29 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
               Select Realm Icon
             </label>
-            <div className="grid grid-cols-7 gap-2 p-2 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 max-h-32 overflow-y-auto">
-              {AVAILABLE_ICONS.map(iconName => (
-                <button
-                  key={iconName}
-                  type="button"
-                  onClick={() => setIcon(iconName)}
-                  className={`p-2 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
-                    icon === iconName
-                      ? 'bg-indigo-600 text-white shadow-md ring-2 ring-indigo-400'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/10'
-                  }`}
-                  title={iconName}
-                >
-                  <DynamicIcon name={iconName} size={16} />
-                </button>
-              ))}
+            <div className="grid grid-cols-7 gap-2 p-2 rounded-xl bg-black/20 dark:bg-white/5 border border-slate-200/50 dark:border-white/10 max-h-32 overflow-y-auto">
+              {AVAILABLE_ICONS.map(iconName => {
+                const isSelected = icon === iconName;
+                return (
+                  <button
+                    key={iconName}
+                    type="button"
+                    onClick={() => setIcon(iconName)}
+                    className={`p-2 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+                      isSelected
+                        ? 'text-white shadow-md'
+                        : 'text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10'
+                    }`}
+                    style={isSelected ? {
+                      backgroundColor: 'var(--theme-primary)',
+                      boxShadow: '0 4px 14px 0 rgba(var(--theme-primary-rgb), 0.4)'
+                    } : {}}
+                    title={iconName}
+                  >
+                    <DynamicIcon name={iconName} size={16} />
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -184,44 +191,33 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
               Default Layout Mode
             </label>
             <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => setLayout('grid')}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
-                  layout === 'grid'
-                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs'
-                    : 'bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300'
-                }`}
-              >
-                <LayoutGrid className="w-3.5 h-3.5" />
-                <span>Grid</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setLayout('timeline')}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
-                  layout === 'timeline'
-                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs'
-                    : 'bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300'
-                }`}
-              >
-                <GitCommitVertical className="w-3.5 h-3.5" />
-                <span>Timeline</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setLayout('notebook')}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
-                  layout === 'notebook'
-                    ? 'bg-indigo-600 border-indigo-600 text-white shadow-xs'
-                    : 'bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300'
-                }`}
-              >
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>Notebook</span>
-              </button>
+              {[
+                { id: 'grid', label: 'Grid', icon: LayoutGrid },
+                { id: 'timeline', label: 'Timeline', icon: GitCommitVertical },
+                { id: 'notebook', label: 'Notebook', icon: BookOpen },
+              ].map(({ id, label, icon: IconComponent }) => {
+                const isSelected = layout === id;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => setLayout(id as SectionLayout)}
+                    className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
+                      isSelected
+                        ? 'text-white shadow-md'
+                        : 'glass-button-secondary'
+                    }`}
+                    style={isSelected ? {
+                      backgroundColor: 'var(--theme-primary)',
+                      borderColor: 'var(--theme-primary)',
+                      boxShadow: '0 4px 14px 0 rgba(var(--theme-primary-rgb), 0.4)'
+                    } : {}}
+                  >
+                    <IconComponent className="w-3.5 h-3.5" />
+                    <span>{label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -247,13 +243,17 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 text-xs font-semibold cursor-pointer transition-colors"
+                className="px-4 py-2 rounded-xl glass-button-secondary text-xs font-semibold cursor-pointer transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-colors"
+                className="px-5 py-2 rounded-xl text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-all hover:brightness-110 active:scale-95"
+                style={{
+                  backgroundColor: 'var(--theme-primary)',
+                  boxShadow: '0 4px 14px 0 rgba(var(--theme-primary-rgb), 0.4)'
+                }}
               >
                 <Check className="w-4 h-4" />
                 <span>{sectionToEdit ? 'Save Changes' : 'Create Section'}</span>

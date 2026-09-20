@@ -119,6 +119,13 @@
               0 0 20px 0 rgba(var(--theme-accent-rgb), 0.1);
 }
 
+@utility glass-pill {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 .glass-pill {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
@@ -129,6 +136,15 @@
 .glass-pill:hover {
   background: rgba(255, 255, 255, 0.09);
   border-color: rgba(255, 255, 255, 0.2);
+}
+
+@utility glass-input {
+  background: rgba(10, 15, 26, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+  transition: all 0.2s ease;
 }
 
 .glass-input {
@@ -145,6 +161,15 @@
   border-color: var(--theme-primary);
   box-shadow: 0 0 0 3px rgba(var(--theme-primary-rgb), 0.2);
   background: rgba(13, 19, 33, 0.85);
+}
+
+@utility glass-button-primary {
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-accent) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: 0 4px 20px -2px rgba(var(--theme-primary-rgb), 0.45);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-button-primary {
@@ -164,6 +189,15 @@
 
 .glass-button-primary:active {
   transform: translateY(0px);
+}
+
+@utility glass-button-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #e2e8f0;
+  transition: all 0.2s ease;
 }
 
 .glass-button-secondary {

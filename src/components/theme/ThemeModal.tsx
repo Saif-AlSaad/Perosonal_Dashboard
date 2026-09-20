@@ -411,7 +411,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 dark:glass-button-secondary border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
+                  className="px-4 py-2 rounded-xl glass-button-secondary text-xs font-semibold flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
                 >
                   <Upload className="w-3.5 h-3.5" style={{ color: 'var(--theme-accent)' }} />
                   <span>Choose Image</span>

@@ -130,16 +130,19 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                   Online
                 </span>
               </div>
-              <p className="text-indigo-600 dark:text-indigo-400 font-semibold text-sm mt-0.5 font-sans">
+              <p 
+                className="font-semibold text-sm mt-0.5 font-sans transition-colors"
+                style={{ color: 'var(--theme-primary)' }}
+              >
                 {profile.title}
               </p>
             </div>
 
             <button
               onClick={onOpenEditModal}
-              className="self-center md:self-start px-3.5 py-1.5 rounded-xl bg-white dark:glass-button-secondary border border-slate-200 dark:border-white/10 text-xs font-semibold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/15 flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+              className="self-center md:self-start px-3.5 py-1.5 rounded-xl glass-button-secondary text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
             >
-              <Edit3 className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
+              <Edit3 className="w-3.5 h-3.5 text-slate-400 group-hover:text-white" />
               <span>Edit Profile</span>
             </button>
           </div>

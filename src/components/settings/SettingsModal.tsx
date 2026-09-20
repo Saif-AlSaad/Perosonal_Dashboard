@@ -190,7 +190,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400">
+            <div 
+              className="p-2 rounded-xl border transition-colors"
+              style={{
+                backgroundColor: 'rgba(var(--theme-primary-rgb), 0.15)',
+                borderColor: 'rgba(var(--theme-primary-rgb), 0.3)',
+                color: 'var(--theme-primary)'
+              }}
+            >
               <SettingsIcon className="w-5 h-5" />
             </div>
             <div>
@@ -209,42 +216,32 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         {/* Tab Navigation */}
         <div className="flex items-center gap-2 my-4 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 shrink-0 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab('profile')}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shrink-0 cursor-pointer ${
-              activeTab === 'profile' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <User className="w-3.5 h-3.5" />
-            <span>Profile</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('security')}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shrink-0 cursor-pointer ${
-              activeTab === 'security' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Shield className="w-3.5 h-3.5" />
-            <span>Security</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('experience')}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shrink-0 cursor-pointer ${
-              activeTab === 'experience' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Motion & FX</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('data')}
-            className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shrink-0 cursor-pointer ${
-              activeTab === 'data' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Database className="w-3.5 h-3.5" />
-            <span>Data Vault</span>
-          </button>
+          {[
+            { id: 'profile', label: 'Profile', icon: User },
+            { id: 'security', label: 'Security', icon: Shield },
+            { id: 'experience', label: 'Motion & FX', icon: Sparkles },
+            { id: 'data', label: 'Data Vault', icon: Database },
+          ].map(({ id, label, icon: TabIcon }) => {
+            const isActive = activeTab === id;
+            return (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id as any)}
+                className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shrink-0 cursor-pointer ${
+                  isActive
+                    ? 'text-white shadow-md'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+                style={isActive ? {
+                  backgroundColor: 'var(--theme-primary)',
+                  boxShadow: '0 4px 14px 0 rgba(var(--theme-primary-rgb), 0.4)'
+                } : {}}
+              >
+                <TabIcon className="w-3.5 h-3.5" />
+                <span>{label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Tab Content */}
@@ -421,7 +418,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <button
                     type="button"
                     onClick={() => setShowPasskeys(!showPasskeys)}
-                    className="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1"
+                    className="text-xs flex items-center gap-1 transition-colors hover:brightness-125 cursor-pointer"
+                    style={{ color: 'var(--theme-primary)' }}
                   >
                     {showPasskeys ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     <span>{showPasskeys ? 'Hide' : 'Reveal'}</span>
@@ -465,7 +463,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl glass-button-primary text-xs font-bold flex items-center gap-1.5"
+                    className="px-5 py-2 rounded-xl glass-button-primary text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                   >
                     <Lock className="w-3.5 h-3.5" />
                     <span>Update Passkey</span>
@@ -493,11 +491,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         onSaveSettings({ ...settings, autoLockMinutes: item.val });
                         showToast(`Auto-lock set to ${item.label}`, 'info');
                       }}
-                      className={`py-2 px-2.5 rounded-xl border text-xs font-medium transition-all ${
+                      className={`py-2 px-2.5 rounded-xl border text-xs font-medium transition-all cursor-pointer ${
                         autoLockMinutes === item.val
-                          ? 'bg-indigo-600 border-indigo-500 text-white shadow-md'
+                          ? 'text-white shadow-md'
                           : 'glass-button-secondary text-slate-300'
                       }`}
+                      style={autoLockMinutes === item.val ? {
+                        backgroundColor: 'var(--theme-primary)',
+                        borderColor: 'var(--theme-primary)',
+                        boxShadow: '0 4px 14px 0 rgba(var(--theme-primary-rgb), 0.4)'
+                      } : {}}
                     >
                       {item.label}
                     </button>
@@ -520,9 +523,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <button
                   type="button"
                   onClick={() => handleExperienceChange('reducedMotion', !reducedMotion)}
-                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 ${
-                    reducedMotion ? 'bg-indigo-600' : 'bg-white/10'
+                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 cursor-pointer ${
+                    reducedMotion ? '' : 'bg-white/10'
                   }`}
+                  style={reducedMotion ? { backgroundColor: 'var(--theme-primary)' } : {}}
                 >
                   <div
                     className={`w-5 h-5 rounded-full bg-white transition-transform ${
