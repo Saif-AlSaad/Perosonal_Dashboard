@@ -45,6 +45,7 @@ import { FavoritesView } from './components/dashboard/FavoritesView';
 import { QuickActions } from './components/dashboard/QuickActions';
 import { SectionPage } from './components/section/SectionPage';
 import { SectionModal } from './components/modals/SectionModal';
+import { DeleteConfirmationModal } from './components/modals/DeleteConfirmationModal';
 import { GlobalSearchModal } from './components/search/GlobalSearchModal';
 import { ThemeModal } from './components/theme/ThemeModal';
 import { SettingsModal } from './components/settings/SettingsModal';
@@ -75,6 +76,8 @@ const DashboardContent: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
   const [sectionToEdit, setSectionToEdit] = useState<Section | null>(null);
+  const [sectionToDelete, setSectionToDelete] = useState<Section | null>(null);
+  const [isDeletingSection, setIsDeletingSection] = useState(false);
   const [quickEntrySection, setQuickEntrySection] = useState<Section | null>(null);
   const [quickEntryDraft, setQuickEntryDraft] = useState<{ title?: string; content?: string } | null>(null);
 
@@ -212,17 +215,32 @@ const DashboardContent: React.FC = () => {
     }
   };
 
-  const handleDeleteSection = async (sec: Section) => {
-    if (window.confirm(`Are you sure you want to delete "${sec.name}"? All entries in this section will also be deleted.`)) {
+  const handleDeleteSection = (sec: Section) => {
+    setSectionToDelete(sec);
+  };
+
+  const handleConfirmDeleteSection = async () => {
+    if (!sectionToDelete) return;
+    setIsDeletingSection(true);
+    const sec = sectionToDelete;
+    try {
       await deleteSection(sec.id);
       const updatedSecs = await getSections();
       const updatedEnts = await getEntries();
+      const updatedActs = await getActivities(8);
       setSections(updatedSecs);
       setEntries(updatedEnts);
+      setActivities(updatedActs);
       if (activeSection && activeSection.id === sec.id) {
         setActiveSection(null);
       }
-      showToast(`Section "${sec.name}" deleted`, 'info');
+      showToast(`Section "${sec.name}" deleted successfully`, 'success');
+      setSectionToDelete(null);
+    } catch (err) {
+      console.error('Failed to delete section', err);
+      showToast('Failed to delete section. Please try again.', 'error');
+    } finally {
+      setIsDeletingSection(false);
     }
   };
 
@@ -462,7 +480,27 @@ const DashboardContent: React.FC = () => {
         }}
         sectionToEdit={sectionToEdit}
         onSave={handleSaveSection}
+        onDelete={handleDeleteSection}
         existingCount={sections.length}
+      />
+
+      {/* Delete Section Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={Boolean(sectionToDelete)}
+        onClose={() => {
+          if (!isDeletingSection) {
+            setSectionToDelete(null);
+          }
+        }}
+        onConfirm={handleConfirmDeleteSection}
+        title="Delete Dimension Realm?"
+        itemName={sectionToDelete?.name}
+        itemIcon={sectionToDelete?.icon}
+        itemColor={sectionToDelete?.color}
+        description={`Are you sure you want to delete "${sectionToDelete?.name}"?`}
+        warningNote="All notes, media, and records inside this realm will also be permanently deleted. This action cannot be undone."
+        confirmText="Delete Realm"
+        isProcessing={isDeletingSection}
       />
 
       {/* Quick Entry Editor Modal */}

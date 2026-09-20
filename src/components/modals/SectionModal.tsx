@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Check, FolderPlus, Edit, LayoutGrid, GitCommitVertical, BookOpen } from 'lucide-react';
+import { X, Check, FolderPlus, Edit, LayoutGrid, GitCommitVertical, BookOpen, Trash2 } from 'lucide-react';
 import { Section, SectionLayout } from '../../types';
 import { DynamicIcon } from '../common/DynamicIcon';
 import { AVAILABLE_ICONS } from '../../constants/icons';
@@ -11,6 +11,7 @@ interface SectionModalProps {
   onClose: () => void;
   sectionToEdit?: Section | null;
   onSave: (sectionData: Section) => void;
+  onDelete?: (section: Section) => void;
   existingCount: number;
 }
 
@@ -29,6 +30,7 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
   onClose,
   sectionToEdit,
   onSave,
+  onDelete,
   existingCount,
 }) => {
   const { showToast } = useToast();
@@ -224,21 +226,39 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-slate-200 dark:border-white/10">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 text-xs font-semibold cursor-pointer transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-colors"
-            >
-              <Check className="w-4 h-4" />
-              <span>{sectionToEdit ? 'Save Changes' : 'Create Section'}</span>
-            </button>
+          <div className="flex items-center justify-between gap-2.5 pt-4 border-t border-slate-200 dark:border-white/10">
+            {sectionToEdit && onDelete ? (
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  onDelete(sectionToEdit);
+                }}
+                className="px-3.5 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-rose-500 dark:text-rose-400 text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>Delete Realm</span>
+              </button>
+            ) : (
+              <div />
+            )}
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:glass-button-secondary border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 text-xs font-semibold cursor-pointer transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition-colors"
+              >
+                <Check className="w-4 h-4" />
+                <span>{sectionToEdit ? 'Save Changes' : 'Create Section'}</span>
+              </button>
+            </div>
           </div>
         </form>
       </motion.div>

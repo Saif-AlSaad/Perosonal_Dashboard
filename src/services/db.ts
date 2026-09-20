@@ -565,14 +565,28 @@ export async function saveSection(section: Section): Promise<void> {
 
 export async function deleteSection(id: string): Promise<void> {
   const db = await getDB();
-  // Also delete all entries belonging to this section
-  const entries = await db.getAllFromIndex('entries', 'by-section', id);
-  const tx = db.transaction(['sections', 'entries'], 'readwrite');
-  await tx.objectStore('sections').delete(id);
-  for (const entry of entries) {
-    await tx.objectStore('entries').delete(entry.id);
+  try {
+    // Delete all entries belonging to this section
+    const entries = await db.getAllFromIndex('entries', 'by-section', id);
+    for (const entry of entries) {
+      await db.delete('entries', entry.id);
+    }
+  } catch (err) {
+    console.warn('Could not query entries by-section index, falling back to manual scan:', err);
+    try {
+      const allEntries = await db.getAll('entries');
+      for (const entry of allEntries) {
+        if (entry.sectionId === id) {
+          await db.delete('entries', entry.id);
+        }
+      }
+    } catch {
+      // Ignore fallback error
+    }
   }
-  await tx.done;
+
+  // Delete the section itself
+  await db.delete('sections', id);
 }
 
 export async function reorderSections(sectionIds: string[]): Promise<void> {

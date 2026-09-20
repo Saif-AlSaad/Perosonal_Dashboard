@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight, MoreVertical, Edit2, Trash2, GripVertical } from 'lucide-react';
 import { Section } from '../../types';
 import { DynamicIcon } from '../common/DynamicIcon';
@@ -27,13 +27,31 @@ export const SectionCard: React.FC<SectionCardProps> = ({
   onDrop,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [canDrag, setCanDrag] = useState(false);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!showMenu) return;
+
+    const handleClickOutside = (e: MouseEvent | PointerEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('pointerdown', handleClickOutside);
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside);
+    };
+  }, [showMenu]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
+    if (showMenu || !cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -56,13 +74,12 @@ export const SectionCard: React.FC<SectionCardProps> = ({
     setIsHovered(false);
     setRotateX(0);
     setRotateY(0);
-    setShowMenu(false);
   };
 
   return (
     <div
       ref={cardRef}
-      draggable={isDraggable}
+      draggable={canDrag && isDraggable}
       onDragStart={e => onDragStart && onDragStart(e, section.id)}
       onDragOver={e => onDragOver && onDragOver(e)}
       onDrop={e => onDrop && onDrop(e, section.id)}
@@ -71,16 +88,16 @@ export const SectionCard: React.FC<SectionCardProps> = ({
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
       style={{
-        transform: isHovered
+        transform: isHovered && !showMenu
           ? `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(8px)`
           : 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)',
-        transition: isHovered ? 'transform 0.1s ease-out' : 'transform 0.4s ease-out',
+        transition: isHovered && !showMenu ? 'transform 0.1s ease-out' : 'transform 0.4s ease-out',
       }}
-      className="group relative cursor-pointer select-none rounded-3xl glass-card p-6 flex flex-col justify-between min-h-[220px] overflow-hidden"
+      className="group relative cursor-pointer select-none rounded-3xl glass-card p-6 flex flex-col justify-between min-h-[220px] overflow-visible"
     >
       {/* Dynamic Colored Ambient Glow on Hover */}
       <div
-        className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-2xl transition-opacity duration-500 pointer-events-none opacity-20 group-hover:opacity-60"
+        className="absolute -top-16 -right-16 w-36 h-36 rounded-full blur-2xl transition-opacity duration-500 pointer-events-none opacity-20 group-hover:opacity-60 overflow-hidden"
         style={{ backgroundColor: section.color || '#6366f1' }}
       />
 
@@ -104,44 +121,58 @@ export const SectionCard: React.FC<SectionCardProps> = ({
           <div
             className="p-1.5 text-slate-500 hover:text-slate-300 cursor-grab active:cursor-grabbing opacity-40 group-hover:opacity-100 transition-opacity"
             title="Drag to reorder"
+            onMouseEnter={() => setCanDrag(true)}
+            onMouseLeave={() => setCanDrag(false)}
             onClick={e => e.stopPropagation()}
           >
             <GripVertical className="w-4 h-4" />
           </div>
 
           {/* Options Menu for Custom or Built-in Sections */}
-          <div className="relative" onClick={e => e.stopPropagation()}>
+          <div className="relative" ref={menuRef} onClick={e => e.stopPropagation()}>
             <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+              type="button"
+              onClick={e => {
+                e.stopPropagation();
+                setShowMenu(prev => !prev);
+              }}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
               aria-label="Section options"
             >
               <MoreVertical className="w-4 h-4" />
             </button>
 
             {showMenu && (
-              <div className="absolute right-0 top-8 z-30 w-36 rounded-xl glass-panel border border-slate-200 dark:border-white/10 shadow-xl p-1 backdrop-blur-xl">
+              <div
+                className="absolute right-0 top-8 z-50 w-40 rounded-xl glass-panel border border-slate-200 dark:border-white/10 shadow-2xl p-1.5 backdrop-blur-2xl"
+                style={{ transform: 'translateZ(50px)' }}
+                onClick={e => e.stopPropagation()}
+              >
                 {onEdit && (
                   <button
-                    onClick={() => {
+                    type="button"
+                    onClick={e => {
+                      e.stopPropagation();
                       setShowMenu(false);
                       onEdit(section);
                     }}
-                    className="w-full px-3 py-2 rounded-lg text-left text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 flex items-center gap-2 font-medium cursor-pointer"
+                    className="w-full px-3 py-2 rounded-lg text-left text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 flex items-center gap-2 font-medium cursor-pointer transition-colors"
                   >
-                    <Edit2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                    <Edit2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
                     <span>Edit Section</span>
                   </button>
                 )}
                 {onDelete && (
                   <button
-                    onClick={() => {
+                    type="button"
+                    onClick={e => {
+                      e.stopPropagation();
                       setShowMenu(false);
                       onDelete(section);
                     }}
-                    className="w-full px-3 py-2 rounded-lg text-left text-xs text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-500/20 flex items-center gap-2 font-medium cursor-pointer"
+                    className="w-full px-3 py-2 rounded-lg text-left text-xs text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-500/20 flex items-center gap-2 font-medium cursor-pointer transition-colors"
                   >
-                    <Trash2 className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+                    <Trash2 className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400 shrink-0" />
                     <span>Delete Section</span>
                   </button>
                 )}
