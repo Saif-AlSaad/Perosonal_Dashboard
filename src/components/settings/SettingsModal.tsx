@@ -53,7 +53,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const [autoLockMinutes, setAutoLockMinutes] = useState(settings.autoLockMinutes);
 
   // Experience Settings
-  const [enable3D, setEnable3D] = useState(settings.enable3D);
   const [reducedMotion, setReducedMotion] = useState(settings.reducedMotion);
 
   // Reset Confirmation State
@@ -111,16 +110,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   // Experience Toggle Save
-  const handleExperienceChange = (key: 'enable3D' | 'reducedMotion', val: boolean) => {
-    if (key === 'enable3D') setEnable3D(val);
-    if (key === 'reducedMotion') setReducedMotion(val);
+  const handleExperienceChange = (key: 'reducedMotion', val: boolean) => {
+    setReducedMotion(val);
 
     const updated = {
       ...settings,
       [key]: val,
     };
     onSaveSettings(updated);
-    showToast(`${key === 'enable3D' ? '3D Canvas' : 'Reduced Motion'} setting updated`, 'info');
+    showToast('Reduced Motion setting updated', 'info');
   };
 
   // Export JSON Backup
@@ -236,7 +234,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>3D & Motion</span>
+            <span>Motion & FX</span>
           </button>
           <button
             onClick={() => setActiveTab('data')}
@@ -509,36 +507,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
           )}
 
-          {/* EXPERIENCE & 3D TAB */}
+          {/* EXPERIENCE TAB */}
           {activeTab === 'experience' && (
             <div className="space-y-4">
               <div className="p-4 rounded-2xl glass-card flex items-center justify-between">
                 <div>
-                  <h4 className="text-sm font-bold text-white">Three.js 3D Ambient Cosmos</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Renders interactive floating geometric crystals, ambient starlight, and cursor parallax
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleExperienceChange('enable3D', !enable3D)}
-                  className={`w-12 h-6 rounded-full transition-colors relative p-0.5 ${
-                    enable3D ? 'bg-indigo-600' : 'bg-white/10'
-                  }`}
-                >
-                  <div
-                    className={`w-5 h-5 rounded-full bg-white transition-transform ${
-                      enable3D ? 'translate-x-6' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
-              </div>
-
-              <div className="p-4 rounded-2xl glass-card flex items-center justify-between">
-                <div>
                   <h4 className="text-sm font-bold text-white">Prefers Reduced Motion</h4>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    Minimizes large scale 3D tilt effects and floating card micro-physics
+                    Minimizes large scale UI motion effects and floating card micro-physics
                   </p>
                 </div>
                 <button

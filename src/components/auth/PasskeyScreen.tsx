@@ -4,7 +4,7 @@ import { KeyRound, Eye, EyeOff, Lock, Sparkles, ArrowRight } from 'lucide-react'
 import confetti from 'canvas-confetti';
 import { hashPasskey, setAuthenticated } from '../../services/auth';
 import { UserProfile, UserSettings } from '../../types';
-import { ThreeScene } from '../canvas/ThreeScene';
+import { BackgroundLayer } from '../background/BackgroundLayer';
 
 interface PasskeyScreenProps {
   profile: UserProfile;
@@ -57,8 +57,8 @@ export const PasskeyScreen: React.FC<PasskeyScreenProps> = ({ profile, settings,
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center p-4 overflow-hidden bg-[#07090e]">
-      {/* 3D Cosmos Background */}
-      <ThreeScene enabled={settings.enable3D} theme={settings.theme} scenePreset={settings.scene3DPreset || 'cosmic-drift'} />
+      {/* Dynamic Background */}
+      <BackgroundLayer config={settings.background} />
 
       {/* Ambient background glow orbs */}
       <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none -translate-x-1/2 -translate-y-1/2" />

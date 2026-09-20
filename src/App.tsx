@@ -7,8 +7,7 @@ import {
   ActivityItem, 
   DashboardStats,
   ThemeConfig,
-  BackgroundConfig,
-  Scene3DPreset 
+  BackgroundConfig 
 } from './types';
 import { 
   initializeDatabase, 
@@ -35,7 +34,6 @@ import {
 import { applyTheme } from './services/theme';
 
 // Components
-import { ThreeScene } from './components/canvas/ThreeScene';
 import { BackgroundLayer } from './components/background/BackgroundLayer';
 import { PasskeyScreen } from './components/auth/PasskeyScreen';
 import { Header } from './components/dashboard/Header';
@@ -285,13 +283,6 @@ const DashboardContent: React.FC = () => {
     setSettings(updatedSettings);
   };
 
-  const handleSaveScene = async (preset: Scene3DPreset) => {
-    if (!settings) return;
-    const updatedSettings = { ...settings, scene3DPreset: preset };
-    await saveSettings(updatedSettings);
-    setSettings(updatedSettings);
-  };
-
   const handleSaveSettings = async (newSettings: UserSettings) => {
     await saveSettings(newSettings);
     setSettings(newSettings);
@@ -303,7 +294,7 @@ const DashboardContent: React.FC = () => {
       <div className="min-h-screen w-full flex items-center justify-center bg-[#07090e] text-white">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-xs font-mono text-slate-400">Booting Demo 3D Life OS...</p>
+          <p className="text-xs font-mono text-slate-400">Booting Life OS...</p>
         </div>
       </div>
     );
@@ -322,9 +313,8 @@ const DashboardContent: React.FC = () => {
 
   return (
     <div className="relative min-h-screen w-full flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
-      {/* Background and 3D Canvas Layers */}
+      {/* Dynamic Background Layer */}
       <BackgroundLayer config={settings.background} />
-      <ThreeScene enabled={settings.enable3D && !settings.reducedMotion} theme={settings.theme} scenePreset={settings.scene3DPreset || 'cosmic-drift'} />
 
       {/* Main Top Header */}
       <Header
@@ -448,10 +438,8 @@ const DashboardContent: React.FC = () => {
         onClose={() => setIsThemeOpen(false)}
         currentTheme={settings.theme}
         currentBackground={settings.background}
-        currentScene3D={settings.scene3DPreset || 'cosmic-drift'}
         onSaveTheme={handleSaveTheme}
         onSaveBackground={handleSaveBackground}
-        onSaveScene={handleSaveScene}
       />
 
       {/* Settings Modal */}

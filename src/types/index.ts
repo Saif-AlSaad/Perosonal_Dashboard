@@ -93,11 +93,11 @@ export interface BackgroundConfig {
 export interface UserSettings {
   passkeyHash: string;
   autoLockMinutes: number; // 0 for disabled
-  enable3D: boolean;
+  enable3D?: boolean;
   reducedMotion: boolean;
   theme: ThemeConfig;
   background: BackgroundConfig;
-  scene3DPreset: Scene3DPreset;
+  scene3DPreset?: string;
 }
 
 export interface DashboardStats {
