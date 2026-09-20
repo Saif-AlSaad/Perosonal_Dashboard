@@ -16,6 +16,8 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({ config }) => {
     scale,
   } = config;
 
+  const hasCustomImage = preset === 'custom' && Boolean(customImageUrl);
+
   const getPresetBackgroundStyle = (): React.CSSProperties => {
     switch (preset) {
       case 'nebula':
@@ -93,7 +95,9 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({ config }) => {
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       {/* Dynamic Background Surface */}
       <div
-        className="absolute inset-0 transition-all duration-700 ease-out theme-bg-surface"
+        className={`absolute inset-0 transition-all duration-700 ease-out theme-bg-surface ${
+          hasCustomImage ? 'has-custom-image' : ''
+        }`}
         style={{
           ...getPresetBackgroundStyle(),
           filter: `blur(${blur}px) brightness(${brightness}%)`,
@@ -104,7 +108,9 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({ config }) => {
 
       {/* Adaptive Readability Overlay */}
       <div
-        className="absolute inset-0 transition-opacity duration-300 pointer-events-none theme-readability-overlay"
+        className={`absolute inset-0 transition-opacity duration-300 pointer-events-none theme-readability-overlay ${
+          hasCustomImage ? 'has-custom-image' : ''
+        }`}
         style={{
           backgroundColor: `rgba(0, 0, 0, ${overlayDarkness / 100})`,
         }}

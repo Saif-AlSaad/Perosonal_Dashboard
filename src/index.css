@@ -286,8 +286,8 @@ html.light body {
   color: #0f172a !important;
 }
 
-/* Background Canvas: clean, bright, subtle ambient illumination */
-html.light .theme-bg-surface {
+/* Background Canvas: clean, bright, subtle ambient illumination for default light mode */
+html.light .theme-bg-surface:not(.has-custom-image) {
   background: 
     radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.05) 0%, transparent 45%),
     radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.05) 0%, transparent 45%),
@@ -297,8 +297,16 @@ html.light .theme-bg-surface {
   filter: none !important;
 }
 
-html.light .theme-readability-overlay {
+html.light .theme-readability-overlay:not(.has-custom-image) {
   display: none !important;
+}
+
+html.light .theme-bg-surface.has-custom-image {
+  background-color: transparent;
+}
+
+html.light .theme-readability-overlay.has-custom-image {
+  display: block !important;
 }
 
 /* Top Navigation Header */

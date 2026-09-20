@@ -6,7 +6,8 @@ import {
   Upload, 
   Sliders, 
   Check, 
-  X 
+  X,
+  Trash2 
 } from 'lucide-react';
 import { 
   ThemeConfig, 
@@ -120,7 +121,35 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
       onSaveBackground(updated);
       showToast('Custom background image applied', 'success');
     };
+    reader.onerror = () => {
+      showToast('Failed to load image file', 'error');
+    };
     reader.readAsDataURL(file);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleSelectCustomBg = () => {
+    if (!background.customImageUrl) return;
+    const updated: BackgroundConfig = {
+      ...background,
+      preset: 'custom',
+    };
+    setBackground(updated);
+    onSaveBackground(updated);
+    showToast('Custom background activated', 'success');
+  };
+
+  const handleRemoveCustomBg = () => {
+    const updated: BackgroundConfig = {
+      ...background,
+      preset: 'nebula',
+      customImageUrl: undefined,
+    };
+    setBackground(updated);
+    onSaveBackground(updated);
+    showToast('Custom background removed', 'info');
   };
 
   const handleBgSliderChange = (key: keyof BackgroundConfig, val: number) => {
@@ -401,21 +430,81 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
               </div>
 
               {/* Upload Custom Image */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">Upload Custom Background Image</h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    High resolution wallpapers, digital artwork, or space photography
-                  </p>
+              <div className={`p-4 rounded-2xl border transition-all ${
+                background.preset === 'custom' && background.customImageUrl
+                  ? 'bg-slate-50/80 dark:bg-white/8 border-indigo-500/50 shadow-md ring-2 ring-indigo-500/20'
+                  : 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10'
+              }`}>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    {background.customImageUrl ? (
+                      <div className="relative shrink-0 w-14 h-14 rounded-xl overflow-hidden border border-slate-300 dark:border-white/20 shadow-xs">
+                        <img 
+                          src={background.customImageUrl} 
+                          alt="Custom device wallpaper" 
+                          className="w-full h-full object-cover"
+                        />
+                        {background.preset === 'custom' && (
+                          <div className="absolute inset-0 bg-indigo-600/30 flex items-center justify-center">
+                            <Check className="w-4 h-4 text-white drop-shadow-sm" />
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="w-10 h-10 rounded-xl bg-indigo-500/10 dark:bg-indigo-500/20 flex items-center justify-center shrink-0 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+                        <Upload className="w-5 h-5" />
+                      </div>
+                    )}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                          Device Wallpaper Background
+                        </h4>
+                        {background.preset === 'custom' && background.customImageUrl && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-700/50">
+                            Active
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        {background.customImageUrl
+                          ? 'Uploaded from device • Full HD & 4K wallpapers supported'
+                          : 'Upload your own photo, desktop wallpaper, or artwork from device'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                    {background.customImageUrl && background.preset !== 'custom' && (
+                      <button
+                        type="button"
+                        onClick={handleSelectCustomBg}
+                        className="px-3 py-1.5 rounded-xl glass-button-primary text-xs font-semibold cursor-pointer shadow-xs"
+                      >
+                        Use This Image
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="px-3.5 py-1.5 rounded-xl glass-button-secondary text-xs font-semibold flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    >
+                      <Upload className="w-3.5 h-3.5" style={{ color: 'var(--theme-accent)' }} />
+                      <span>{background.customImageUrl ? 'Change' : 'Choose Image'}</span>
+                    </button>
+                    {background.customImageUrl && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveCustomBg}
+                        title="Remove custom image"
+                        className="p-1.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 cursor-pointer transition-colors border border-transparent hover:border-rose-200 dark:hover:border-rose-500/20"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2 rounded-xl glass-button-secondary text-xs font-semibold flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
-                >
-                  <Upload className="w-3.5 h-3.5" style={{ color: 'var(--theme-accent)' }} />
-                  <span>Choose Image</span>
-                </button>
+
                 <input
                   ref={fileInputRef}
                   type="file"
