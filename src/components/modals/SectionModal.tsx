@@ -69,7 +69,7 @@ const SectionModalContent: React.FC<SectionModalProps> = ({
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="w-full max-w-md rounded-3xl bg-white dark:glass-panel border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8 relative my-auto"
+        className="w-full max-w-md rounded-3xl glass-panel border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8 relative my-auto"
       >
         <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 mb-5">
           <div className="flex items-center gap-2.5">

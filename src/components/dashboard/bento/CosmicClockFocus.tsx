@@ -185,7 +185,7 @@ export const CosmicClockFocus: React.FC = () => {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -6, scale: 0.95 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 top-9 z-30 w-52 p-1.5 rounded-2xl bg-white dark:glass-panel border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-2xl space-y-1"
+                className="absolute right-0 top-9 z-30 w-52 p-1.5 rounded-2xl glass-panel border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-2xl space-y-1"
               >
                 <div className="px-2.5 py-1 text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                   Select Focus State

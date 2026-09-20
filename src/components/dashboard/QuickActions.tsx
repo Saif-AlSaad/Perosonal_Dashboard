@@ -47,7 +47,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="mb-3 p-2 rounded-2xl bg-white dark:glass-panel border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col gap-1.5 backdrop-blur-xl min-w-[170px]"
+            className="mb-3 p-2 rounded-2xl glass-panel border border-slate-200 dark:border-white/10 shadow-2xl flex flex-col gap-1.5 backdrop-blur-xl min-w-[170px]"
           >
             {actions.map((act, index) => {
               const Icon = act.icon;

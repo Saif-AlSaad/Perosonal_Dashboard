@@ -120,7 +120,7 @@ export const SectionCard: React.FC<SectionCardProps> = ({
             </button>
 
             {showMenu && (
-              <div className="absolute right-0 top-8 z-30 w-36 rounded-xl bg-white dark:glass-panel border border-slate-200 dark:border-white/10 shadow-xl p-1 backdrop-blur-xl">
+              <div className="absolute right-0 top-8 z-30 w-36 rounded-xl glass-panel border border-slate-200 dark:border-white/10 shadow-xl p-1 backdrop-blur-xl">
                 {onEdit && (
                   <button
                     onClick={() => {

@@ -137,12 +137,19 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="w-full max-w-2xl rounded-3xl bg-white dark:glass-panel border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8 relative my-auto max-h-[90vh] flex flex-col overflow-hidden"
+        className="w-full max-w-2xl rounded-3xl glass-panel border border-slate-200 dark:border-white/10 shadow-2xl p-6 sm:p-8 relative my-auto max-h-[90vh] flex flex-col overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-500/15 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400">
+            <div 
+              className="p-2 rounded-xl border transition-colors"
+              style={{
+                backgroundColor: 'rgba(var(--theme-primary-rgb), 0.15)',
+                borderColor: 'rgba(var(--theme-primary-rgb), 0.3)',
+                color: 'var(--theme-primary)'
+              }}
+            >
               <Palette className="w-5 h-5" />
             </div>
             <div>
@@ -155,21 +162,25 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10 cursor-pointer transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center gap-2 my-4 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 shrink-0">
+        <div className="flex items-center gap-2 my-4 p-1 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 shrink-0">
           <button
             onClick={() => setActiveTab('themes')}
             className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'themes'
-                ? 'bg-indigo-600 text-white shadow-md'
+                ? 'text-white shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
+            style={activeTab === 'themes' ? {
+              backgroundColor: 'var(--theme-primary)',
+              boxShadow: '0 4px 14px 0 rgba(var(--theme-primary-rgb), 0.4)'
+            } : {}}
           >
             <Palette className="w-3.5 h-3.5" />
             <span>Themes</span>
@@ -178,9 +189,13 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
             onClick={() => setActiveTab('background')}
             className={`flex-1 py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer ${
               activeTab === 'background'
-                ? 'bg-indigo-600 text-white shadow-md'
+                ? 'text-white shadow-md'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
+            style={activeTab === 'background' ? {
+              backgroundColor: 'var(--theme-primary)',
+              boxShadow: '0 4px 14px 0 rgba(var(--theme-primary-rgb), 0.4)'
+            } : {}}
           >
             <ImageIcon className="w-3.5 h-3.5" />
             <span>Background</span>
@@ -205,14 +220,24 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                         onClick={() => handleSelectPreset(p.id)}
                         className={`p-3.5 rounded-2xl glass-card cursor-pointer border transition-all flex items-center justify-between ${
                           isSelected
-                            ? 'border-indigo-500 ring-2 ring-indigo-500/40 bg-indigo-50/60 dark:bg-indigo-500/10'
+                            ? 'ring-2'
                             : 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
                         }`}
+                        style={isSelected ? {
+                          borderColor: 'var(--theme-primary)',
+                          boxShadow: '0 0 0 2px rgba(var(--theme-primary-rgb), 0.4)',
+                          backgroundColor: 'rgba(var(--theme-primary-rgb), 0.12)'
+                        } : {}}
                       >
                         <div>
                           <div className="flex items-center gap-2">
                             <h4 className="text-sm font-bold text-slate-900 dark:text-white">{p.name}</h4>
-                            {isSelected && <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
+                            {isSelected && (
+                              <Check 
+                                className="w-3.5 h-3.5" 
+                                style={{ color: 'var(--theme-primary)' }}
+                              />
+                            )}
                           </div>
                           <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">{p.desc}</p>
                         </div>
@@ -234,14 +259,14 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
               </div>
 
               {/* Custom Theme Editor */}
-              <div className="pt-4 border-t border-slate-200 dark:border-white/5 space-y-4">
+              <div className="pt-4 border-t border-slate-200 dark:border-white/10 space-y-4">
                 <div className="flex items-center gap-2">
-                  <Sliders className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
+                  <Sliders className="w-4 h-4" style={{ color: 'var(--theme-accent)' }} />
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white">Custom Theme Color Fine-Tuning</h3>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <label className="block text-[11px] font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                       Primary Accent
                     </label>
@@ -252,13 +277,13 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                         onChange={e => handleCustomThemeChange('primaryColor', e.target.value)}
                         className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0"
                       />
-                      <span className="text-xs font-mono text-slate-600 dark:text-slate-400 uppercase">
+                      <span className="text-xs font-mono text-slate-600 dark:text-slate-300 uppercase">
                         {theme.primaryColor}
                       </span>
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <label className="block text-[11px] font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                       Secondary Accent
                     </label>
@@ -269,13 +294,13 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                         onChange={e => handleCustomThemeChange('accentColor', e.target.value)}
                         className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0"
                       />
-                      <span className="text-xs font-mono text-slate-600 dark:text-slate-400 uppercase">
+                      <span className="text-xs font-mono text-slate-600 dark:text-slate-300 uppercase">
                         {theme.accentColor}
                       </span>
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5">
+                  <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
                     <label className="block text-[11px] font-medium text-slate-700 dark:text-slate-300 mb-1.5">
                       Background Tint
                     </label>
@@ -286,7 +311,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                         onChange={e => handleCustomThemeChange('bgColor', e.target.value)}
                         className="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0"
                       />
-                      <span className="text-xs font-mono text-slate-600 dark:text-slate-400 uppercase">
+                      <span className="text-xs font-mono text-slate-600 dark:text-slate-300 uppercase">
                         {theme.bgColor}
                       </span>
                     </div>
@@ -306,7 +331,8 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                       max="32"
                       value={theme.glassBlur}
                       onChange={e => handleCustomThemeChange('glassBlur', parseInt(e.target.value))}
-                      className="w-full accent-indigo-600 dark:accent-indigo-500"
+                      className="w-full cursor-pointer"
+                      style={{ accentColor: 'var(--theme-primary)' }}
                     />
                   </div>
 
@@ -324,7 +350,8 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                       onChange={e =>
                         handleCustomThemeChange('glassOpacity', parseFloat(e.target.value))
                       }
-                      className="w-full accent-indigo-600 dark:accent-indigo-500"
+                      className="w-full cursor-pointer"
+                      style={{ accentColor: 'var(--theme-primary)' }}
                     />
                   </div>
                 </div>
@@ -348,13 +375,23 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                         onClick={() => handleBgPresetSelect(bg.id)}
                         className={`p-3 rounded-2xl glass-card cursor-pointer border transition-all text-left ${
                           isSelected
-                            ? 'border-indigo-500 ring-2 ring-indigo-500/40 bg-indigo-50/60 dark:bg-indigo-500/10'
+                            ? 'ring-2'
                             : 'border-slate-200 dark:border-white/10 hover:border-slate-300 dark:hover:border-white/20'
                         }`}
+                        style={isSelected ? {
+                          borderColor: 'var(--theme-primary)',
+                          boxShadow: '0 0 0 2px rgba(var(--theme-primary-rgb), 0.4)',
+                          backgroundColor: 'rgba(var(--theme-primary-rgb), 0.12)'
+                        } : {}}
                       >
                         <div className="flex items-center justify-between">
                           <h4 className="text-xs font-bold text-slate-900 dark:text-white">{bg.name}</h4>
-                          {isSelected && <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />}
+                          {isSelected && (
+                            <Check 
+                              className="w-3.5 h-3.5" 
+                              style={{ color: 'var(--theme-primary)' }}
+                            />
+                          )}
                         </div>
                         <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 leading-snug">{bg.desc}</p>
                       </div>
@@ -364,7 +401,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
               </div>
 
               {/* Upload Custom Image */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 dark:text-white">Upload Custom Background Image</h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -376,7 +413,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                   onClick={() => fileInputRef.current?.click()}
                   className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 dark:glass-button-secondary border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200 text-xs font-semibold flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
                 >
-                  <Upload className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <Upload className="w-3.5 h-3.5" style={{ color: 'var(--theme-accent)' }} />
                   <span>Choose Image</span>
                 </button>
                 <input
@@ -389,7 +426,7 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
               </div>
 
               {/* Real-time Fine-Tuning Controls */}
-              <div className="space-y-4 pt-2 border-t border-slate-200 dark:border-white/5">
+              <div className="space-y-4 pt-2 border-t border-slate-200 dark:border-white/10">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
                   Real-time Image & Overlay Adjustments
                 </h4>
@@ -407,7 +444,8 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                       max="40"
                       value={background.blur}
                       onChange={e => handleBgSliderChange('blur', parseInt(e.target.value))}
-                      className="w-full accent-indigo-600 dark:accent-indigo-500"
+                      className="w-full cursor-pointer"
+                      style={{ accentColor: 'var(--theme-primary)' }}
                     />
                   </div>
 
@@ -423,13 +461,14 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                       max="150"
                       value={background.brightness}
                       onChange={e => handleBgSliderChange('brightness', parseInt(e.target.value))}
-                      className="w-full accent-indigo-600 dark:accent-indigo-500"
+                      className="w-full cursor-pointer"
+                      style={{ accentColor: 'var(--theme-primary)' }}
                     />
                   </div>
 
                   {/* Overlay Darkness */}
                   <div>
-                    <div className="flex justify-between text-xs text-slate-300 mb-1">
+                    <div className="flex justify-between text-xs text-slate-700 dark:text-slate-300 mb-1 font-medium">
                       <span>Darkness Overlay</span>
                       <span className="font-mono">{background.overlayDarkness}%</span>
                     </div>
@@ -439,13 +478,14 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                       max="90"
                       value={background.overlayDarkness}
                       onChange={e => handleBgSliderChange('overlayDarkness', parseInt(e.target.value))}
-                      className="w-full accent-indigo-500"
+                      className="w-full cursor-pointer"
+                      style={{ accentColor: 'var(--theme-primary)' }}
                     />
                   </div>
 
                   {/* Scale */}
                   <div>
-                    <div className="flex justify-between text-xs text-slate-300 mb-1">
+                    <div className="flex justify-between text-xs text-slate-700 dark:text-slate-300 mb-1 font-medium">
                       <span>Scale / Zoom</span>
                       <span className="font-mono">{background.scale}%</span>
                     </div>
@@ -455,7 +495,8 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
                       max="140"
                       value={background.scale}
                       onChange={e => handleBgSliderChange('scale', parseInt(e.target.value))}
-                      className="w-full accent-indigo-500"
+                      className="w-full cursor-pointer"
+                      style={{ accentColor: 'var(--theme-primary)' }}
                     />
                   </div>
                 </div>
@@ -465,10 +506,10 @@ export const ThemeModal: React.FC<ThemeModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="pt-4 border-t border-white/10 flex items-center justify-end gap-2 shrink-0">
+        <div className="pt-4 border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-2 shrink-0">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl glass-button-primary text-xs font-bold"
+            className="px-5 py-2.5 rounded-xl glass-button-primary text-xs font-bold cursor-pointer"
           >
             Apply & Done
           </button>

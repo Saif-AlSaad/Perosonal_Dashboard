@@ -72,7 +72,7 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
         initial={{ opacity: 0, scale: 0.95, y: -20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: -20 }}
-        className="w-full max-w-2xl rounded-3xl bg-white dark:glass-panel border border-slate-200 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[75vh]"
+        className="w-full max-w-2xl rounded-3xl glass-panel border border-slate-200 dark:border-white/10 shadow-2xl overflow-hidden flex flex-col max-h-[75vh]"
       >
         {/* Search Bar Input */}
         <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center gap-3">

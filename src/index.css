@@ -76,13 +76,31 @@
   background-clip: content-box;
 }
 
-/* Glassmorphism System Classes */
+/* Glassmorphism System Classes & Utilities */
+@utility glass-panel {
+  background: var(--theme-card-bg);
+  backdrop-filter: blur(var(--theme-glass-blur));
+  -webkit-backdrop-filter: blur(var(--theme-glass-blur));
+  border: 1px solid var(--theme-card-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
 .glass-panel {
   background: var(--theme-card-bg);
   backdrop-filter: blur(var(--theme-glass-blur));
   -webkit-backdrop-filter: blur(var(--theme-glass-blur));
   border: 1px solid var(--theme-card-border);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+@utility glass-card {
+  background: var(--theme-card-bg);
+  backdrop-filter: blur(var(--theme-glass-blur));
+  -webkit-backdrop-filter: blur(var(--theme-glass-blur));
+  border: 1px solid var(--theme-card-border);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
 }
 
 .glass-card {
@@ -130,7 +148,7 @@
 }
 
 .glass-button-primary {
-  background: linear-gradient(135deg, var(--theme-primary) 0%, #4f46e5 100%);
+  background: linear-gradient(135deg, var(--theme-primary) 0%, var(--theme-accent) 100%);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #ffffff;
   font-weight: 500;
