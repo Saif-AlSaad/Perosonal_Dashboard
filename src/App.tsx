@@ -325,6 +325,12 @@ const DashboardContent: React.FC = () => {
         profile={profile}
         settings={settings}
         onUnlock={() => setAuthed(true)}
+        onRegisterSuccess={(newProfile, newSettings) => {
+          setProfile(newProfile);
+          setSettings(newSettings);
+          setAuthed(true);
+          showToast(`Welcome to MyWorld, ${newProfile.name}!`, 'success');
+        }}
       />
     );
   }
