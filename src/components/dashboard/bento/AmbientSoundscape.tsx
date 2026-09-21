@@ -10,6 +10,13 @@ import {
   Waves
 } from 'lucide-react';
 
+declare global {
+  interface Window {
+    YT?: any;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
 export type SoundscapePresetId = 'cosmic-drone' | 'cyberpunk-rain' | 'lo-fi-vinyl' | 'deep-void';
 
 interface SoundscapePreset {
@@ -20,11 +27,13 @@ interface SoundscapePreset {
   badge: string;
 }
 
+const YT_DEEP_VOID_VIDEO_ID = 'I3OJUwILelU';
+
 const PRESETS: SoundscapePreset[] = [
   { id: 'cosmic-drone', label: 'Cosmic Drone', icon: Radio, color: '#6366f1', badge: 'Analog Pad' },
   { id: 'cyberpunk-rain', label: 'Cyber Rain', icon: CloudRain, color: '#06b6d4', badge: 'Atmospheric' },
   { id: 'lo-fi-vinyl', label: 'Lo-Fi Vinyl', icon: Disc, color: '#f59e0b', badge: 'Warm Crackle' },
-  { id: 'deep-void', label: 'Deep Void', icon: Waves, color: '#a855f7', badge: 'Binaural Drift' },
+  { id: 'deep-void', label: 'Deep Void', icon: Waves, color: '#a855f7', badge: 'Healing Ambient' },
 ];
 
 export const AmbientSoundscape: React.FC = () => {
@@ -37,6 +46,92 @@ export const AmbientSoundscape: React.FC = () => {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const masterGainRef = useRef<GainNode | null>(null);
   const activeNodesRef = useRef<{ stop: () => void }[]>([]);
+
+  // YouTube Audio Player Ref for Deep Void
+  const ytPlayerRef = useRef<any>(null);
+  const isYtReadyRef = useRef<boolean>(false);
+
+  // State refs for async callbacks
+  const isPlayingRef = useRef(isPlaying);
+  const activePresetRef = useRef(activePreset);
+  const volumeRef = useRef(volume);
+  const isMutedRef = useRef(isMuted);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+    activePresetRef.current = activePreset;
+    volumeRef.current = volume;
+    isMutedRef.current = isMuted;
+  }, [isPlaying, activePreset, volume, isMuted]);
+
+  // Initialize YouTube IFrame Player
+  useEffect(() => {
+    let isCancelled = false;
+
+    const createPlayer = () => {
+      if (isCancelled || !window.YT || !window.YT.Player || ytPlayerRef.current) return;
+      try {
+        ytPlayerRef.current = new window.YT.Player('ambient-deep-void-yt-player', {
+          height: '100',
+          width: '100',
+          videoId: YT_DEEP_VOID_VIDEO_ID,
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            loop: 1,
+            playlist: YT_DEEP_VOID_VIDEO_ID,
+            playsinline: 1,
+            rel: 0,
+          },
+          events: {
+            onReady: (event: any) => {
+              isYtReadyRef.current = true;
+              const currentVol = isMutedRef.current ? 0 : Math.round(volumeRef.current * 100);
+              event.target.setVolume(currentVol);
+              if (isMutedRef.current) {
+                event.target.mute();
+              }
+              if (isPlayingRef.current && activePresetRef.current === 'deep-void') {
+                event.target.playVideo();
+              }
+            },
+            onStateChange: (event: any) => {
+              if (window.YT && event.data === window.YT.PlayerState.ENDED) {
+                event.target.playVideo();
+              }
+            },
+          },
+        });
+      } catch (err) {
+        console.warn('Could not initialize YouTube player for Deep Void:', err);
+      }
+    };
+
+    if (!window.YT) {
+      const existingScript = document.getElementById('youtube-iframe-api');
+      if (!existingScript) {
+        const tag = document.createElement('script');
+        tag.id = 'youtube-iframe-api';
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag?.parentNode?.insertBefore(tag, firstScriptTag);
+      }
+
+      const prevReady = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (prevReady) prevReady();
+        createPlayer();
+      };
+    } else {
+      createPlayer();
+    }
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   // Initialize or resume Web Audio context
   const getAudioContext = useCallback(() => {
@@ -73,6 +168,35 @@ export const AmbientSoundscape: React.FC = () => {
   // Generate sounds based on preset
   const startSoundscape = useCallback((presetId: SoundscapePresetId) => {
     stopCurrentSoundscape();
+
+    // If preset is Deep Void, play YouTube music stream
+    if (presetId === 'deep-void') {
+      if (ytPlayerRef.current && isYtReadyRef.current) {
+        try {
+          const currentVol = isMutedRef.current ? 0 : Math.round(volumeRef.current * 100);
+          ytPlayerRef.current.setVolume(currentVol);
+          if (isMutedRef.current) {
+            ytPlayerRef.current.mute();
+          } else {
+            ytPlayerRef.current.unMute();
+          }
+          ytPlayerRef.current.playVideo();
+        } catch (err) {
+          console.warn('Failed to start YouTube playback:', err);
+        }
+      }
+      return;
+    }
+
+    // Otherwise, ensure YouTube is paused and play Web Audio synth
+    if (ytPlayerRef.current && isYtReadyRef.current) {
+      try {
+        ytPlayerRef.current.pauseVideo();
+      } catch {
+        // Ignore
+      }
+    }
+
     const { ctx, masterGain } = getAudioContext();
 
     if (presetId === 'cosmic-drone') {
@@ -197,35 +321,6 @@ export const AmbientSoundscape: React.FC = () => {
           humGain.disconnect();
         }
       });
-    } else if (presetId === 'deep-void') {
-      // Binaural wave oscillators (40Hz and 44Hz) with slow stereo modulation
-      const oscL = ctx.createOscillator();
-      const oscR = ctx.createOscillator();
-      oscL.type = 'sine';
-      oscR.type = 'sine';
-      oscL.frequency.setValueAtTime(45, ctx.currentTime);
-      oscR.frequency.setValueAtTime(49, ctx.currentTime);
-
-      const merger = ctx.createChannelMerger(2);
-      oscL.connect(merger, 0, 0);
-      oscR.connect(merger, 0, 1);
-
-      const voidGain = ctx.createGain();
-      voidGain.gain.setValueAtTime(0.35, ctx.currentTime);
-
-      merger.connect(voidGain);
-      voidGain.connect(masterGain);
-
-      oscL.start();
-      oscR.start();
-
-      activeNodesRef.current.push({
-        stop: () => {
-          oscL.stop();
-          oscR.stop();
-          voidGain.disconnect();
-        }
-      });
     }
   }, [getAudioContext, stopCurrentSoundscape]);
 
@@ -233,6 +328,13 @@ export const AmbientSoundscape: React.FC = () => {
   const togglePlay = () => {
     if (isPlaying) {
       stopCurrentSoundscape();
+      if (ytPlayerRef.current && isYtReadyRef.current) {
+        try {
+          ytPlayerRef.current.pauseVideo();
+        } catch {
+          // Ignore
+        }
+      }
       setIsPlaying(false);
     } else {
       startSoundscape(activePreset);
@@ -257,6 +359,13 @@ export const AmbientSoundscape: React.FC = () => {
         audioCtxRef.current.currentTime
       );
     }
+    if (ytPlayerRef.current && isYtReadyRef.current) {
+      try {
+        ytPlayerRef.current.setVolume(isMuted ? 0 : Math.round(newVal * 100));
+      } catch {
+        // Ignore
+      }
+    }
   };
 
   // Toggle mute
@@ -269,12 +378,31 @@ export const AmbientSoundscape: React.FC = () => {
         audioCtxRef.current.currentTime
       );
     }
+    if (ytPlayerRef.current && isYtReadyRef.current) {
+      try {
+        if (nextMuted) {
+          ytPlayerRef.current.mute();
+        } else {
+          ytPlayerRef.current.unMute();
+          ytPlayerRef.current.setVolume(Math.round(volume * 100));
+        }
+      } catch {
+        // Ignore
+      }
+    }
   };
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       stopCurrentSoundscape();
+      if (ytPlayerRef.current) {
+        try {
+          ytPlayerRef.current.destroy();
+        } catch {
+          // Ignore
+        }
+      }
       if (audioCtxRef.current) {
         void audioCtxRef.current.close();
       }
@@ -420,6 +548,15 @@ export const AmbientSoundscape: React.FC = () => {
             title={`Volume: ${Math.round(volume * 100)}%`}
           />
         </div>
+      </div>
+
+      {/* Hidden YouTube audio player for Deep Void preset */}
+      <div
+        className="absolute -left-[9999px] -top-[9999px] w-1 h-1 overflow-hidden pointer-events-none opacity-0"
+        aria-hidden="true"
+        tabIndex={-1}
+      >
+        <div id="ambient-deep-void-yt-player" />
       </div>
     </div>
   );
