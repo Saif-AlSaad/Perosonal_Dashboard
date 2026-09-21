@@ -4,9 +4,6 @@ An interactive, client-encrypted personal dashboard, memory vault, and portfolio
 
 ![Project Preview](https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80)
 
-[![Download Android APK](https://img.shields.io/badge/Download-Android%20APK%20(.apk)-emerald?style=for-the-badge&logo=android&logoColor=white)](https://github.com/Saif-AlSaad/Perosonal_Dashboard/releases/latest/download/LifeOS.apk)
-[![Web App](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-indigo?style=for-the-badge&logo=github&logoColor=white)](https://saif-alsaad.github.io/Perosonal_Dashboard/)
-
 ---
 
 ## 📱 Android Direct Download & PWA
