@@ -27,12 +27,15 @@ interface SoundscapePreset {
   badge: string;
 }
 
-const YT_DEEP_VOID_VIDEO_ID = 'I3OJUwILelU';
+const YOUTUBE_PRESETS: Partial<Record<SoundscapePresetId, string>> = {
+  'deep-void': 'I3OJUwILelU',
+  'lo-fi-vinyl': 'CLeZyIID9Bo',
+};
 
 const PRESETS: SoundscapePreset[] = [
   { id: 'cosmic-drone', label: 'Cosmic Drone', icon: Radio, color: '#6366f1', badge: 'Analog Pad' },
   { id: 'cyberpunk-rain', label: 'Cyber Rain', icon: CloudRain, color: '#06b6d4', badge: 'Atmospheric' },
-  { id: 'lo-fi-vinyl', label: 'Lo-Fi Vinyl', icon: Disc, color: '#f59e0b', badge: 'Warm Crackle' },
+  { id: 'lo-fi-vinyl', label: 'Lo-Fi Vinyl', icon: Disc, color: '#f59e0b', badge: 'Chill Beats' },
   { id: 'deep-void', label: 'Deep Void', icon: Waves, color: '#a855f7', badge: 'Healing Ambient' },
 ];
 
@@ -47,9 +50,10 @@ export const AmbientSoundscape: React.FC = () => {
   const masterGainRef = useRef<GainNode | null>(null);
   const activeNodesRef = useRef<{ stop: () => void }[]>([]);
 
-  // YouTube Audio Player Ref for Deep Void
+  // YouTube Audio Player Ref for YouTube-backed presets
   const ytPlayerRef = useRef<any>(null);
   const isYtReadyRef = useRef<boolean>(false);
+  const currentLoadedVideoIdRef = useRef<string>('CLeZyIID9Bo');
 
   // State refs for async callbacks
   const isPlayingRef = useRef(isPlaying);
@@ -71,17 +75,19 @@ export const AmbientSoundscape: React.FC = () => {
     const createPlayer = () => {
       if (isCancelled || !window.YT || !window.YT.Player || ytPlayerRef.current) return;
       try {
+        const initialVideoId = YOUTUBE_PRESETS[activePresetRef.current] || 'CLeZyIID9Bo';
+        currentLoadedVideoIdRef.current = initialVideoId;
+
         ytPlayerRef.current = new window.YT.Player('ambient-deep-void-yt-player', {
           height: '100',
           width: '100',
-          videoId: YT_DEEP_VOID_VIDEO_ID,
+          videoId: initialVideoId,
           playerVars: {
             autoplay: 0,
             controls: 0,
             disablekb: 1,
             fs: 0,
             loop: 1,
-            playlist: YT_DEEP_VOID_VIDEO_ID,
             playsinline: 1,
             rel: 0,
           },
@@ -93,8 +99,14 @@ export const AmbientSoundscape: React.FC = () => {
               if (isMutedRef.current) {
                 event.target.mute();
               }
-              if (isPlayingRef.current && activePresetRef.current === 'deep-void') {
-                event.target.playVideo();
+              const targetYtId = YOUTUBE_PRESETS[activePresetRef.current];
+              if (isPlayingRef.current && targetYtId) {
+                if (currentLoadedVideoIdRef.current !== targetYtId) {
+                  currentLoadedVideoIdRef.current = targetYtId;
+                  event.target.loadVideoById(targetYtId);
+                } else {
+                  event.target.playVideo();
+                }
               }
             },
             onStateChange: (event: any) => {
@@ -105,7 +117,7 @@ export const AmbientSoundscape: React.FC = () => {
           },
         });
       } catch (err) {
-        console.warn('Could not initialize YouTube player for Deep Void:', err);
+        console.warn('Could not initialize YouTube player for ambient soundscapes:', err);
       }
     };
 
@@ -169,8 +181,10 @@ export const AmbientSoundscape: React.FC = () => {
   const startSoundscape = useCallback((presetId: SoundscapePresetId) => {
     stopCurrentSoundscape();
 
-    // If preset is Deep Void, play YouTube music stream
-    if (presetId === 'deep-void') {
+    const targetYoutubeId = YOUTUBE_PRESETS[presetId];
+
+    // If preset is YouTube-backed (Deep Void or Lo-Fi Vinyl), play YouTube stream
+    if (targetYoutubeId) {
       if (ytPlayerRef.current && isYtReadyRef.current) {
         try {
           const currentVol = isMutedRef.current ? 0 : Math.round(volumeRef.current * 100);
@@ -180,7 +194,13 @@ export const AmbientSoundscape: React.FC = () => {
           } else {
             ytPlayerRef.current.unMute();
           }
-          ytPlayerRef.current.playVideo();
+
+          if (currentLoadedVideoIdRef.current === targetYoutubeId) {
+            ytPlayerRef.current.playVideo();
+          } else {
+            currentLoadedVideoIdRef.current = targetYoutubeId;
+            ytPlayerRef.current.loadVideoById(targetYoutubeId);
+          }
         } catch (err) {
           console.warn('Failed to start YouTube playback:', err);
         }
@@ -347,6 +367,16 @@ export const AmbientSoundscape: React.FC = () => {
     setActivePreset(presetId);
     if (isPlaying) {
       startSoundscape(presetId);
+    } else {
+      const targetYtId = YOUTUBE_PRESETS[presetId];
+      if (targetYtId && ytPlayerRef.current && isYtReadyRef.current) {
+        currentLoadedVideoIdRef.current = targetYtId;
+        try {
+          ytPlayerRef.current.cueVideoById(targetYtId);
+        } catch {
+          // Ignore
+        }
+      }
     }
   };
 
