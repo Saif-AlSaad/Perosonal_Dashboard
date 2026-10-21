@@ -99,3 +99,4 @@ Password : [demopass]
 *Saif Al Saad* <br>
 *Software Engineering* <br>
 *Daffodil International University* 
+*Major: Software Quality Assurance & Testing*
